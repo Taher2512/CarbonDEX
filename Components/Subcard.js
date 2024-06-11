@@ -1,8 +1,9 @@
 import React from "react";
+import Button from "./Button";
 
 function Subcard({plans}) {
   return (
-    <div className="max-w-sm  text-black border border-gray-200 rounded-lg shadow bg-green dark:border-gray-700">
+    <div className="max-w-sm  text-black   rounded-lg shadow bg-green">
       <a href="#">
         <img
           className="rounded-t-lg"
@@ -27,27 +28,7 @@ function Subcard({plans}) {
         <p className="mb-8 font-normal text-black text-center">
           over the planting schedule of the project.
         </p>
-        <a
-          href="#"
-          className="inline-flex items-center px-4 py-3 text-md font-medium text-center text-white bg-black rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 "
-        >
-          Choose this plan
-          <svg
-            className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 14 10"
-          >
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M1 5h12m0 0L9 1m4 4L9 9"
-            />
-          </svg>
-        </a>
+        <Button text="Choose this plan" url="#"/>
       </div>
     </div>
   );
