@@ -78,8 +78,8 @@ function page() {
           style={{ width: "100%", height: "100%" }}
         />
       </div>
-      <div className="w-full mb-16 bg-green text-black py-8 flex flex-col items-center px-96">
-        <h5 className=" font-semibold text-xl mb-8">
+      <div className="w-full mb-16 bg-green text-black py-8  flex flex-col items-center sm:px-96 px-16">
+        <h5 className="text-center font-semibold text-xl mb-8">
           How do I know what's going on with my trees?
         </h5>
         <p className="text-center mb-16">
