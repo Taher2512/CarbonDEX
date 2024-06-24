@@ -42,7 +42,7 @@ function page() {
   ];
 
   return (
-    <main className="flex flex-col items-center overflow-hidden ">
+    <main className="flex flex-col items-center overflow-hidden bg-gray-900 ">
       <Navbar />
       <div className="w-screen bg-green sm:py-24 py-8 text-black mb-16 flex flex-col items-center justify-center">
         <span className="sm:w-1/3 w-3/4 mb-16">

@@ -3,7 +3,7 @@ import Button from './Button'
 
 function Footer() {
   return (
-    <footer className='w-screen py-16 flex flex-col justify-between px-40 items-center'>
+    <footer className='w-screen py-16 flex flex-col justify-between px-40 text-white items-center'>
         <span className='w-full flex items-center justify-between'>
 
         <ul className='flex gap-4'>
