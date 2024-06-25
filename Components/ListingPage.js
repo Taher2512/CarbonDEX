@@ -39,6 +39,7 @@ import {
 import { db } from "../config";
 import { ethers } from "ethers";
 import Navbar from "./Navbar2";
+import { format } from "date-fns";
 
 const tokenAddress = "0x3bbD240FA226B967D7500A58d22EEBAA36B0c7Ed";
 const exchangeAddress = "0x8af7B3cF7c97956a4DB75adB9738f422540C664b";
@@ -53,16 +54,17 @@ function ListingPage() {
   const [priceUSD, setPriceUSD] = useState("");
   const [listings, setListings] = useState([]);
   const [error, setError] = useState(null);
-  const [currentPrice, setCurrentPrice] = useState(null);
+  const [currentPrice, setCurrentPrice] = useState(0);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [portfolio, setPortfolio] = useState({
     credits: 100,
     cash: 5000,
     price: 10,
   });
-  const [totalTrades, setTotalTrades] = useState(15);
+  const [totalListings, setTotalListings] = useState(15);
   const [showModal, setShowModal] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [myBalance, setMyBalance] = useState(0);
 
   const address = useAddress();
 
@@ -79,6 +81,17 @@ function ListingPage() {
     AggregatorV3InterfaceABI
   );
 
+  const getMyBalance = async () => {
+    if (address && token) {
+      try {
+        const balance = await token.call("balanceOf", [address]);
+        setMyBalance(ethers.utils.formatUnits(balance.toString(), 18));
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+      }
+    }
+  };
+
   useEffect(() => {
     if (address) {
       const q = query(collection(db, "trades"), orderBy("createdAt", "desc"));
@@ -88,9 +101,10 @@ function ListingPage() {
           .map((doc) => ({ id: doc.id, ...doc.data() }))
           .filter((item) => item.address === address);
 
-        console.log("Fetched listings:", arr);
         setListings(arr);
+        setTotalListings(arr.length);
       });
+      getMyBalance();
 
       return () => unsubscribe();
     }
@@ -107,7 +121,7 @@ function ListingPage() {
         }
         const data = await response.json();
         const formattedData = data.prices.map(([timestamp, price]) => ({
-          date: new Date(timestamp).toISOString().split("T")[0],
+          date: format(new Date(timestamp), "dd-MMM-yy"),
           price: price,
         }));
         setChartData(formattedData);
@@ -121,6 +135,7 @@ function ListingPage() {
       }
     };
 
+    getMyBalance();
     fetchChartData();
   }, []);
 
@@ -132,7 +147,6 @@ function ListingPage() {
     );
     const latestRoundData = await priceFeed.latestRoundData();
     const price = ethers.utils.formatUnits(latestRoundData.answer, 8);
-    console.log(Math.round(price));
     setEthUsdPrice(Math.round(price));
     return Math.round(price);
   }
@@ -144,7 +158,6 @@ function ListingPage() {
     );
     try {
       const tokenBalance = await token.call("balanceOf", [address]);
-      console.log("Token balance:", tokenBalance.toString());
       const q = query(
         collection(db, "trades"),
         where("address", "==", address)
@@ -174,7 +187,6 @@ function ListingPage() {
         address,
         exchangeAddress,
       ]);
-      console.log("Allowance:", allowance.toString());
 
       const listingData = {
         address: address,
@@ -188,8 +200,7 @@ function ListingPage() {
       setPriceUSD("");
       setShowSuccessAlert(true);
       setTimeout(() => setShowSuccessAlert(false), 3000);
-      setTotalTrades(totalTrades + 1);
-      console.log(res);
+      setTotalListings(totalListings + 1);
     } catch (error) {
       console.error("Error creating listing:", error);
     }
@@ -249,14 +260,12 @@ function ListingPage() {
                 Balance
               </h3>
               <p className="text-2xl font-bold text-green-500">
-                ${accountValue.toFixed(2)}
+                {myBalance} CCT
+                {/* ${accountValue.toFixed(2)} */}
               </p>
               <div className="mt-2 text-sm text-gray-400">
-                <p>Cash: ${portfolio.cash.toFixed(2)}</p>
-                <p>
-                  Credits: {portfolio.credits} ($
-                  {(portfolio.credits * portfolio.price).toFixed(2)})
-                </p>
+                <p>Value: ${(myBalance * currentPrice).toFixed(2)}</p>
+                <p>Price: ${currentPrice.toFixed(2)} (per CCT)</p>
               </div>
             </div>
 
@@ -265,7 +274,7 @@ function ListingPage() {
                 Account Stats
               </h3>
               <p className="text-sm text-gray-400">
-                Total Trades: {totalTrades}
+                Total Listings: {totalListings}
               </p>
               <p className="text-sm text-gray-400">Account Type: Standard</p>
               <p className="text-sm text-gray-400">
