@@ -7,6 +7,7 @@ import { User, CreditCard, Briefcase, Settings, HelpCircle, XIcon, DollarSign, T
 import { Alert, AlertDescription } from '../../../Components/Alert';
 import { Card, CardHeader, CardContent, CardFooter } from '../../../Components/Card';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../../Components/Modal';
+import Navbar from '../../../Components/Navbar2';
 
 const CarbonCreditListingPage = () => {
   const [chartData, setChartData] = useState([]);
@@ -76,7 +77,8 @@ const CarbonCreditListingPage = () => {
   const accountValue = portfolio.credits * portfolio.price + portfolio.cash;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
+    <div className="min-h-screen bg-gray-900 text-gray-100 p-8 flex flex-col items-center px-72">
+      <Navbar bgColor='bg-gray-700' />
       <div className="max-w-7xl mx-auto">
         <header className="mb-8">
           <h1 className="text-3xl font-bold text-green-400">Carbon Credit Listing</h1>
