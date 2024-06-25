@@ -6,6 +6,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 import { User, CreditCard, Briefcase, Settings, HelpCircle, XIcon, DollarSign, TrendingUp } from 'lucide-react';
 import { Alert, AlertDescription } from '../../../Components/Alert';
 import { Card, CardHeader, CardContent, CardFooter } from '../../../Components/Card';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../../Components/Modal';
 
 const CarbonCreditListingPage = () => {
   const [chartData, setChartData] = useState([]);
@@ -17,6 +18,8 @@ const CarbonCreditListingPage = () => {
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [portfolio, setPortfolio] = useState({ credits: 100, cash: 5000, price: 10 });
   const [totalTrades, setTotalTrades] = useState(15);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
     const fetchChartData = async () => {
@@ -56,8 +59,18 @@ const CarbonCreditListingPage = () => {
     }
   };
 
+  // const handleRemoveListing = (id) => {
+  //   setListings(listings.filter(listing => listing.id !== id));
+  // };
+
   const handleRemoveListing = (id) => {
-    setListings(listings.filter(listing => listing.id !== id));
+    setSelectedId(id);
+    setShowModal(true);
+  };
+
+  const confirmRemoveListing = () => {
+    setListings(listings.filter(listing => listing.id !== selectedId));
+    setShowModal(false);
   };
 
   const accountValue = portfolio.credits * portfolio.price + portfolio.cash;
@@ -263,7 +276,7 @@ const CarbonCreditListingPage = () => {
           </motion.div>
         </div>
 
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
@@ -296,6 +309,41 @@ const CarbonCreditListingPage = () => {
               </tbody>
             </table>
           </div>
+        </motion.div> */}
+
+<motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+        >
+          <h2 className="text-2xl font-semibold mb-4 text-green-400">Your Listings</h2>
+          <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-gray-700">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Amount</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Price (USD)</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-600">
+                {listings.map((listing) => (
+                  <tr key={listing.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">{listing.amount}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">${listing.price}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        onClick={() => handleRemoveListing(listing.id)}
+                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded inline-flex items-center"
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </motion.div>
 
         {showSuccessAlert && (
@@ -303,7 +351,26 @@ const CarbonCreditListingPage = () => {
             <AlertDescription>Listing created successfully!</AlertDescription>
           </Alert>
         )}
+
+        {showModal && (
+          <Modal onClose={() => setShowModal(false)}>
+            <ModalHeader>Confirm Removal</ModalHeader>
+            <ModalBody>Are you sure you want to remove this listing?</ModalBody>
+            <ModalFooter>
+              <button onClick={() => setShowModal(false)} className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                Cancel
+              </button>
+              <button onClick={confirmRemoveListing} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+                Confirm
+              </button>
+            </ModalFooter>
+          </Modal>
+        )}
       </div>
+      
+
+      
+    
     </div>
   );
 };
