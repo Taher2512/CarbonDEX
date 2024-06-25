@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { User, CreditCard, Briefcase, Settings, HelpCircle, XIcon, DollarSign, TrendingUp } from 'lucide-react';
-import { Alert, AlertDescription } from '../../../Components/alert';
+import { Alert, AlertDescription } from '../../../Components/Alert';
 import { Card, CardHeader, CardContent, CardFooter } from '../../../Components/Card';
 
 const CarbonCreditListingPage = () => {
