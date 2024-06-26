@@ -28,7 +28,7 @@ const AccountOverview = ({ portfolio, totalTrades }) => {
           </div>
         </div>
         
-        <div>
+        <div className='flex flex-col items-end'>
           <h3 className="text-lg font-medium mb-2 text-gray-300">Account Stats</h3>
           <p className="text-sm text-gray-400">Total Trades: {totalTrades}</p>
           <p className="text-sm text-gray-400">Account Type: Standard</p>
