@@ -4,7 +4,7 @@ import React from "react";
 import { ThirdwebProvider, metamaskWallet } from "@thirdweb-dev/react";
 import ListingPage from "../../../Components/ListingPage";
 
-const CarbonCreditListingPage = () => {
+const page = () => {
   return (
     <ThirdwebProvider
       clientId={process.env.NEXT_PUBLIC_TEMPLATE_CLIENT_ID}
@@ -18,4 +18,4 @@ const CarbonCreditListingPage = () => {
   );
 };
 
-export default CarbonCreditListingPage;
+export default page;

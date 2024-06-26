@@ -23,7 +23,12 @@ import {
 import { Alert, AlertDescription } from "./Alert";
 import { Card, CardHeader, CardContent, CardFooter } from "./Card";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "./Modal";
-import { ConnectWallet, useAddress, useContract } from "@thirdweb-dev/react";
+import {
+  ConnectWallet,
+  useAddress,
+  useContract,
+  useSigner,
+} from "@thirdweb-dev/react";
 import {
   addDoc,
   collection,
@@ -41,8 +46,8 @@ import { ethers } from "ethers";
 import Navbar from "./Navbar2";
 import { format } from "date-fns";
 
-const tokenAddress = "0x3bbD240FA226B967D7500A58d22EEBAA36B0c7Ed";
-const exchangeAddress = "0x8af7B3cF7c97956a4DB75adB9738f422540C664b";
+const tokenAddress = "0x6F79b8D64C18A32a57D4899D2799898CeE1bdAAD";
+const exchangeAddress = "0xCc0955FC5E618B9c70552B987292613B9bA9530D";
 const priceFeedAddress = "0x694AA1769357215DE4FAC081bf1f309aDC325306";
 const CarbonCreditToken = require("../src/app/utils/CarbonCreditToken.json");
 const CarbonCreditExchange = require("../src/app/utils/CarbonCreditExchange.json");
@@ -67,6 +72,7 @@ function ListingPage() {
   const [myBalance, setMyBalance] = useState(0);
 
   const address = useAddress();
+  const signer = useSigner();
 
   const { contract: token, isLoading: isTokenLoading } = useContract(
     tokenAddress,
@@ -143,11 +149,11 @@ function ListingPage() {
     const priceFeed = new ethers.Contract(
       priceFeedAddress,
       AggregatorV3InterfaceABI,
-      ""
+      signer
+      // ""
     );
     const latestRoundData = await priceFeed.latestRoundData();
     const price = ethers.utils.formatUnits(latestRoundData.answer, 8);
-    setEthUsdPrice(Math.round(price));
     return Math.round(price);
   }
 
@@ -525,10 +531,11 @@ function ListingPage() {
                 {listings.map((listing) => (
                   <tr key={listing.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {format(
-                        new Date(listing.createdAt.toDate()),
-                        "dd-MMM-yyyy"
-                      )}
+                      {listing.createdAt &&
+                        format(
+                          new Date(listing.createdAt.toDate()),
+                          "dd-MMM-yyyy"
+                        )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
                       {listing.amount}
