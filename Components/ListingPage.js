@@ -507,13 +507,16 @@ function ListingPage() {
             <table className="w-full">
               <thead className="bg-gray-700">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Amount
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Price (USD)
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Action
                   </th>
                 </tr>
@@ -521,13 +524,19 @@ function ListingPage() {
               <tbody className="divide-y divide-gray-600">
                 {listings.map((listing) => (
                   <tr key={listing.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      {format(
+                        new Date(listing.createdAt.toDate()),
+                        "dd-MMM-yyyy"
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
                       {listing.amount}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
                       ${listing.price}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
                       <button
                         onClick={() => handleRemoveListing(listing.id)}
                         className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded inline-flex items-center"
