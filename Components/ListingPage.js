@@ -41,8 +41,8 @@ import { ethers } from "ethers";
 import Navbar from "./Navbar2";
 import { format } from "date-fns";
 
-const tokenAddress = "0x3bbD240FA226B967D7500A58d22EEBAA36B0c7Ed";
-const exchangeAddress = "0x8af7B3cF7c97956a4DB75adB9738f422540C664b";
+const tokenAddress = "0xB0c0f1012567Fb1BEee089e64190a14b844A36b7";
+const exchangeAddress = "0xaCF60d7b13820A0EF21339Fe92Eb7d9727D30642";
 const priceFeedAddress = "0x694AA1769357215DE4FAC081bf1f309aDC325306";
 const CarbonCreditToken = require("../src/app/utils/CarbonCreditToken.json");
 const CarbonCreditExchange = require("../src/app/utils/CarbonCreditExchange.json");
@@ -61,7 +61,7 @@ function ListingPage() {
     cash: 5000,
     price: 10,
   });
-  const [totalListings, setTotalListings] = useState(15);
+  const [totalListings, setTotalListings] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [myBalance, setMyBalance] = useState(0);
@@ -94,7 +94,7 @@ function ListingPage() {
 
   useEffect(() => {
     if (address) {
-      const q = query(collection(db, "trades"), orderBy("createdAt", "desc"));
+      const q = query(collection(db, "listings"), orderBy("createdAt", "desc"));
 
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const arr = querySnapshot.docs
@@ -159,7 +159,7 @@ function ListingPage() {
     try {
       const tokenBalance = await token.call("balanceOf", [address]);
       const q = query(
-        collection(db, "trades"),
+        collection(db, "listings"),
         where("address", "==", address)
       );
       const querySnapshot = await getDocs(q);
@@ -193,9 +193,9 @@ function ListingPage() {
         amount: tokenAmount,
         price: priceUSD,
         status: 0,
-        createdAt: serverTimestamp(), // Add this line to include a timestamp
+        createdAt: serverTimestamp(),
       };
-      let res = await addDoc(collection(db, "trades"), listingData);
+      let res = await addDoc(collection(db, "listings"), listingData);
       setTokenAmount("");
       setPriceUSD("");
       setShowSuccessAlert(true);
@@ -225,7 +225,7 @@ function ListingPage() {
 
   const confirmRemoveListing = async () => {
     try {
-      await deleteDoc(doc(db, "trades", selectedId));
+      await deleteDoc(doc(db, "listings", selectedId));
       setShowModal(false);
     } catch (error) {
       console.error("Error removing listing or reducing allowance:", error);
@@ -371,12 +371,12 @@ function ListingPage() {
                       placeholder="Enter price in USD"
                     />
                   </div>
-                  <button
+                  {/* <button
                     type="submit"
                     className="w-full py-2 px-4 bg-green-500 hover:bg-green-600 text-white font-bold rounded-md transition-colors"
                   >
                     Create Listing
-                  </button>
+                  </button> */}
                 </form>
               </CardContent>
             </Card>
@@ -525,10 +525,12 @@ function ListingPage() {
                 {listings.map((listing) => (
                   <tr key={listing.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {format(
-                        new Date(listing.createdAt.toDate()),
-                        "dd-MMM-yyyy"
-                      )}
+                      {listing.createdAt &&
+                        listing.createdAt.toDate() &&
+                        format(
+                          new Date(listing.createdAt.toDate()),
+                          "dd-MMM-yyyy"
+                        )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
                       {listing.amount}
@@ -548,6 +550,11 @@ function ListingPage() {
                 ))}
               </tbody>
             </table>
+            {totalListings === 0 && (
+              <div className="p-4 text-center text-green-400">
+                You have no listings
+              </div>
+            )}
           </div>
         </motion.div>
 

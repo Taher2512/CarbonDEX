@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ThirdwebProvider, metamaskWallet } from "@thirdweb-dev/react";
-import BuyPage from "../../../Components/BuyPage";
+import MarketplacePage from "../../../Components/MarketplacePage";
 
 const CarbonCreditListingPage = () => {
   return (
@@ -13,7 +13,7 @@ const CarbonCreditListingPage = () => {
       // supportedWallets={[coinbaseWallet()]}
       supportedWallets={[metamaskWallet()]}
     >
-      <BuyPage />
+      <MarketplacePage />
     </ThirdwebProvider>
   );
 };

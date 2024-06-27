@@ -31,6 +31,7 @@ const Navbar = ({
 
   const navItems = [
     { name: "Buy", href: "/buy" },
+    { name: "Marketplace", href: "/marketplace" },
     { name: "Sell", href: "/sell" },
     { name: "Tokenize", href: "/tokenize" },
   ];
