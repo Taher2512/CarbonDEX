@@ -480,14 +480,14 @@ function ListingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
           >
-            <Card className="bg-gray-800 shadow-lg">
+            <Card className="bg-gray-800 shadow-lg h-full">
               <CardHeader>
                 <h2 className="text-xl font-semibold text-green-400">
                   Current Price
                 </h2>
               </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-center">
+              <CardContent className="h-3/4 flex items-center justify-center">
+                <div className="text-4xl font-bold text-center">
                   ${currentPrice ? currentPrice.toFixed(2) : "-"}
                 </div>
               </CardContent>
