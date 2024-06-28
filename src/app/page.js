@@ -1,102 +1,350 @@
-import React from "react";
-import Subcard from "../../Components/Subcard";
-import Navbar from "../../Components/Navbar.js";
-import Image from "next/image";
-import Button from "../../Components/Button.js";
-import Footer from "../../Components/Footer.js";
+// "use client"
 
-function page() {
-  const Plans = [
-    {
-      title: "Eco-Supporter",
-      image:
-        "https://images.unsplash.com/photo-1717869885094-4a6f55df8154?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      price: "5",
-      description: "Equivalent to planting 2 cedar trees every month.",
-      offset: "125",
-    },
-    {
-      title: "Eco-Supporter",
-      image:
-        "https://images.unsplash.com/photo-1717869885094-4a6f55df8154?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      price: "5",
-      description: "Equivalent to planting 2 cedar trees every month.",
-      offset: "125",
-    },
-    {
-      title: "Eco-Supporter",
-      image:
-        "https://images.unsplash.com/photo-1717869885094-4a6f55df8154?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      price: "5",
-      description: "Equivalent to planting 2 cedar trees every month.",
-      offset: "125",
-    },
-    {
-      title: "Eco-Supporter",
-      image:
-        "https://images.unsplash.com/photo-1717869885094-4a6f55df8154?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      price: "5",
-      description: "Equivalent to planting 2 cedar trees every month.",
-      offset: "125",
-    },
+// import React, { useState, useEffect } from 'react';
+// import { ArrowRight, BarChart2, Globe, RefreshCw, Shield, Wallet, Menu, X } from 'lucide-react';
+
+// const LandingPage = () => {
+//   const [isMenuOpen, setIsMenuOpen] = useState(false);
+//   const [scrollPosition, setScrollPosition] = useState(0);
+
+//   useEffect(() => {
+//     const handleScroll = () => setScrollPosition(window.scrollY);
+//     window.addEventListener('scroll', handleScroll);
+//     return () => window.removeEventListener('scroll', handleScroll);
+//   }, []);
+
+//   return (
+//     <div className="min-h-screen bg-gray-900 text-gray-100 font-sans">
+//       <header className={`fixed w-full z-50 transition-all duration-300 ${scrollPosition > 50 ? 'bg-gray-900/90 backdrop-blur-md py-2' : 'bg-transparent py-8'}`}>
+//         <div className="container mx-auto px-4 flex justify-between items-center">
+//           <h1 className="text-3xl font-bold text-green-400">CarbonDex</h1>
+//           <nav className="hidden md:flex items-center space-x-8">
+//             {['Buy', 'Sell', 'Tokenise'].map((item) => (
+//               <a key={item} href={`#${item.toLowerCase()}`} className="text-gray-300 hover:text-green-400 transition-colors duration-300">{item}</a>
+//             ))}
+//             <button className="bg-green-500 text-gray-900 px-4 py-2 rounded-full text-sm font-semibold hover:bg-green-400 transition-all duration-300 transform hover:scale-105 flex items-center">
+//               <Wallet className="mr-2 h-4 w-4" /> Connect Wallet
+//             </button>
+//           </nav>
+//           <button className="md:hidden text-gray-300 hover:text-green-400 transition-colors duration-300" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+//             {isMenuOpen ? <X /> : <Menu />}
+//           </button>
+//         </div>
+//       </header>
+
+//       {/* Mobile menu */}
+//       <div className={`fixed inset-0 z-40 bg-gray-900 transform ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out md:hidden`}>
+//         <div className="flex flex-col items-center justify-center h-full space-y-8">
+//           {['Buy', 'Sell', 'Tokenise'].map((item) => (
+//             <a key={item} href={`${item.toLowerCase()}`} className="text-2xl text-gray-300 hover:text-green-400 transition-colors duration-300" onClick={() => setIsMenuOpen(false)}>{item}</a>
+//           ))}
+//           <button className="bg-green-500 text-gray-900 px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-400 transition-all duration-300 transform hover:scale-105 flex items-center">
+//             <Wallet className="mr-2 h-5 w-5" /> Connect Wallet
+//           </button>
+//         </div>
+//       </div>
+
+//       <main className="pt-20">
+// <section className="h-screen flex items-center justify-center text-center px-4 relative overflow-hidden">
+//   <div className="absolute inset-0 bg-[url('/api/placeholder/1920/1080')] bg-cover bg-center opacity-20"></div>
+//   <div className="relative z-10 max-w-4xl mx-auto">
+//     <h2 className="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight">Revolutionizing Carbon Credit Trading</h2>
+//     <p className="text-xl md:text-2xl text-gray-300 mb-10">Seamless. Transparent. Impactful.</p>
+//     <button className="bg-green-500 text-gray-900 px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-400 transition-all duration-300 transform hover:scale-105">
+//       Get Started
+//     </button>
+//   </div>
+// </section>
+
+// <section id="features" className="py-20 bg-gray-800">
+//   <div className="container mx-auto px-4">
+//     <h3 className="text-4xl font-bold text-center mb-16 text-white">Key Features</h3>
+//     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+//       {[
+//         { icon: <Globe className="w-16 h-16 text-green-400 mb-6" />, title: 'Global Marketplace', description: 'Connect with buyers and sellers worldwide' },
+//         { icon: <BarChart2 className="w-16 h-16 text-green-400 mb-6" />, title: 'Real-time Analytics', description: 'Make informed decisions with up-to-date market data' },
+//         { icon: <Shield className="w-16 h-16 text-green-400 mb-6" />, title: 'Secure Transactions', description: 'Blockchain-backed security for all trades' },
+//         { icon: <RefreshCw className="w-16 h-16 text-green-400 mb-6" />, title: 'Automated Matching', description: 'Efficient pairing of buyers and sellers' },
+//       ].map((feature, index) => (
+//         <div key={index} className="text-center p-8 bg-gray-700 rounded-lg shadow-lg border border-gray-600 transform transition-all duration-300 hover:scale-105 hover:bg-gray-600">
+//           {feature.icon}
+//           <h4 className="text-2xl font-semibold mb-4 text-white">{feature.title}</h4>
+//           <p className="text-gray-300">{feature.description}</p>
+//         </div>
+//       ))}
+//     </div>
+//   </div>
+// </section>
+
+// <section id="how-it-works" className="py-20 bg-gray-900">
+//   <div className="container mx-auto px-4">
+//     <h3 className="text-4xl font-bold text-center mb-16 text-white">How It Works</h3>
+//     <div className="max-w-3xl mx-auto">
+//       {[
+//         'Register and verify your account',
+//         'List your carbon credits or browse available offerings',
+//         'Use our advanced matching algorithm to find the best deals',
+//         'Complete secure transactions with blockchain technology',
+//         'Track your impact and receive detailed reports',
+//       ].map((step, index) => (
+//         <div key={index} className="flex items-center mb-12 group">
+//           <div className="bg-green-500 text-gray-900 rounded-full w-12 h-12 flex items-center justify-center mr-6 text-xl font-bold transition-all duration-300 group-hover:scale-110">
+//             {index + 1}
+//           </div>
+//           <p className="text-xl text-gray-300 group-hover:text-green-400 transition-colors duration-300">{step}</p>
+//         </div>
+//       ))}
+//     </div>
+//   </div>
+// </section>
+
+// <section id="contact" className="py-20 bg-gray-800 text-center">
+//   <div className="container mx-auto px-4">
+//     <h3 className="text-4xl font-bold mb-8 text-white">Ready to Make a Difference?</h3>
+//     <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">Join CarbonDex today and be part of the solution. Together, we can create a sustainable future.</p>
+//     <button className="bg-green-500 text-gray-900 px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-400 transition-all duration-300 transform hover:scale-105 flex items-center mx-auto">
+//       Get Started Now <ArrowRight className="ml-2" />
+//     </button>
+//   </div>
+// </section>
+//       </main>
+
+//       <footer className="bg-gray-900 text-gray-400 py-12">
+//         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+//           <p>&copy; 2024 CarbonDex. All rights reserved.</p>
+//           <div className="flex space-x-6 mt-4 md:mt-0">
+//             <a href="#" className="hover:text-green-400 transition-colors duration-300">Privacy Policy</a>
+//             <a href="#" className="hover:text-green-400 transition-colors duration-300">Terms of Service</a>
+//             <a href="#" className="hover:text-green-400 transition-colors duration-300">Contact Us</a>
+//           </div>
+//         </div>
+//       </footer>
+//     </div>
+//   );
+// };
+
+// export default LandingPage;
+
+"use client";
+
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import {
+  ArrowRight,
+  BarChart2,
+  Globe,
+  RefreshCw,
+  Shield,
+  Wallet,
+  Menu,
+  X,
+} from "lucide-react";
+
+const LandingPage = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollPosition(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navItems = [
+    { name: "Marketplace", path: "/marketplace" },
+    { name: "Sell", path: "/sell" },
+    { name: "Tokenise", path: "/tokenise" },
   ];
 
   return (
-    <main className="flex flex-col items-center overflow-hidden bg-gray-900 ">
-      <Navbar />
-      <div className="w-screen bg-green sm:py-24 py-8 text-black mb-16 flex flex-col items-center justify-center">
-        <span className="sm:w-1/3 w-3/4 mb-16">
-          <h1 className="sm:text-5xl text-2xl font-bold text-center mb-3">
-            Choose a plan to offset your carbon footprint.
-          </h1>
-          <p className="text-center">
-            Join us in supporting the global climate efforts.
-          </p>
-        </span>
-        <span className="sm:w-1/3 w-3/4">
-          <p className="text-center">
-            Choose a subscription plan that suits you best. Your monthly support
-            will fund a biodiverse forest that cleanses the atmosphere by
-            sequestering CO2.
-          </p>
-          <p className="text-center font-semibold">
-            Together, we will save the planet!
-          </p>
-        </span>
-      </div>
-      <div className=" grid sm:grid-cols-3 grid-cols-1 sm:w-3/4 sm:gap-y-20 gap-y-8 sm:gap-x-10 mb-24">
-        {Plans.map((plans, index) => (
-          <Subcard key={index} plans={plans} />
-        ))}
-      </div>
-      <div className="w-full h-80">
-        <Image
-          className="object-cover"
-          src="/treeimg.jpg"
-          width={1920}
-          height={1080}
-          style={{ width: "100%", height: "100%" }}
-        />
-      </div>
-      <div className="w-full mb-16 bg-green text-black py-8  flex flex-col items-center sm:px-96 px-16">
-        <h5 className="text-center font-semibold text-xl mb-8">
-          How do I know what's going on with my trees?
-        </h5>
-        <p className="text-center mb-16">
-          We plant trees on our eco-project in Belize. When buying our packages,
-          you’ll get a monthly update on the project’s progress. You can also
-          read more about Belize project on our blog
-        </p>
-        <Button text="Read more" url="#" />
-      </div>
-      <div className="w-screen bg-green-300 text-black py-8 flex flex-col items-center ">
-        <h5 className="text-center font-semibold ">Do you need a plan tailored for your business?</h5>
-        <p className="text-center mb-16">Contact Us we will cater your needs.</p>
-        <Button text="Contact Us" url="#" />
-      </div>
-      <Footer />
-    </main>
-  );
-}
+    <div className="min-h-screen bg-gray-900 text-gray-100 font-sans">
+      <header
+        className={`fixed w-full z-50 transition-all duration-300 ${
+          scrollPosition > 50
+            ? "bg-gray-900/90 backdrop-blur-md py-2"
+            : "bg-transparent py-4"
+        }`}
+      >
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <Link href="/" className="text-3xl font-bold text-green-400">
+            CarbonDex
+          </Link>
+          <nav className="hidden md:flex items-center space-x-8">
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                href={item.path}
+                className="text-gray-300 hover:text-green-400 transition-colors duration-300"
+              >
+                {item.name}
+              </Link>
+            ))}
+            <button className="bg-green-500 text-gray-900 px-4 py-2 rounded-full text-sm font-semibold hover:bg-green-400 transition-all duration-300 transform hover:scale-105 flex items-center">
+              <Wallet className="mr-2 h-4 w-4" /> Connect Wallet
+            </button>
+          </nav>
+          <button
+            className="md:hidden text-gray-300 hover:text-green-400 transition-colors duration-300"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X /> : <Menu />}
+          </button>
+        </div>
+      </header>
 
-export default page;
+      {/* Mobile menu */}
+      <div
+        className={`fixed inset-0 z-40 bg-gray-900 transform ${
+          isMenuOpen ? "translate-x-0" : "translate-x-full"
+        } transition-transform duration-300 ease-in-out md:hidden`}
+      >
+        <div className="flex flex-col items-center justify-center h-full space-y-8">
+          {navItems.map((item) => (
+            <Link
+              key={item.name}
+              href={item.path}
+              className="text-2xl text-gray-300 hover:text-green-400 transition-colors duration-300"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {item.name}
+            </Link>
+          ))}
+          <button className="bg-green-500 text-gray-900 px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-400 transition-all duration-300 transform hover:scale-105 flex items-center">
+            <Wallet className="mr-2 h-5 w-5" /> Connect Wallet
+          </button>
+        </div>
+      </div>
+
+      <main className="pt-20">
+        <section className="h-screen flex items-center justify-center text-center px-4 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[url('/api/placeholder/1920/1080')] bg-cover bg-center opacity-20"></div>
+          <div className="relative z-10 max-w-4xl mx-auto">
+            <h2 className="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight">
+              Revolutionizing Carbon Credit Trading
+            </h2>
+            <p className="text-xl md:text-2xl text-gray-300 mb-10">
+              Seamless. Transparent. Impactful.
+            </p>
+            <button className="bg-green-500 text-gray-900 px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-400 transition-all duration-300 transform hover:scale-105">
+              Get Started
+            </button>
+          </div>
+        </section>
+
+        <section id="features" className="py-20 bg-gray-800">
+          <div className="container mx-auto px-4">
+            <h3 className="text-4xl font-bold text-center mb-16 text-white">
+              Key Features
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[
+                {
+                  icon: <Globe className="w-16 h-16 text-green-400 mb-6" />,
+                  title: "Global Marketplace",
+                  description: "Connect with buyers and sellers worldwide",
+                },
+                {
+                  icon: <BarChart2 className="w-16 h-16 text-green-400 mb-6" />,
+                  title: "Real-time Analytics",
+                  description:
+                    "Make informed decisions with up-to-date market data",
+                },
+                {
+                  icon: <Shield className="w-16 h-16 text-green-400 mb-6" />,
+                  title: "Secure Transactions",
+                  description: "Blockchain-backed security for all trades",
+                },
+                {
+                  icon: <RefreshCw className="w-16 h-16 text-green-400 mb-6" />,
+                  title: "Automated Matching",
+                  description: "Efficient pairing of buyers and sellers",
+                },
+              ].map((feature, index) => (
+                <div
+                  key={index}
+                  className="text-center p-8 bg-gray-700 rounded-lg shadow-lg border border-gray-600 transform transition-all duration-300 hover:scale-105 hover:bg-gray-600"
+                >
+                  {feature.icon}
+                  <h4 className="text-2xl font-semibold mb-4 text-white">
+                    {feature.title}
+                  </h4>
+                  <p className="text-gray-300">{feature.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="how-it-works" className="py-20 bg-gray-900">
+          <div className="container mx-auto px-4">
+            <h3 className="text-4xl font-bold text-center mb-16 text-white">
+              How It Works
+            </h3>
+            <div className="max-w-3xl mx-auto">
+              {[
+                "Register and verify your account",
+                "List your carbon credits or browse available offerings",
+                "Use our advanced matching algorithm to find the best deals",
+                "Complete secure transactions with blockchain technology",
+                "Track your impact and receive detailed reports",
+              ].map((step, index) => (
+                <div key={index} className="flex items-center mb-12 group">
+                  <div className="bg-green-500 text-gray-900 rounded-full w-12 h-12 flex items-center justify-center mr-6 text-xl font-bold transition-all duration-300 group-hover:scale-110">
+                    {index + 1}
+                  </div>
+                  <p className="text-xl text-gray-300 group-hover:text-green-400 transition-colors duration-300">
+                    {step}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" className="py-20 bg-gray-800 text-center">
+          <div className="container mx-auto px-4">
+            <h3 className="text-4xl font-bold mb-8 text-white">
+              Ready to Make a Difference?
+            </h3>
+            <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
+              Join CarbonDex today and be part of the solution. Together, we can
+              create a sustainable future.
+            </p>
+            <button className="bg-green-500 text-gray-900 px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-400 transition-all duration-300 transform hover:scale-105 flex items-center mx-auto">
+              Get Started Now <ArrowRight className="ml-2" />
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <footer className="bg-gray-900 text-gray-400 py-12">
+        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+          <p>&copy; 2024 CarbonDex. All rights reserved.</p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <Link
+              href="/privacy-policy"
+              className="hover:text-green-400 transition-colors duration-300"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/privacy-policy"
+              className="hover:text-green-400 transition-colors duration-300"
+            >
+              Terms of sevice
+            </Link>
+            <Link
+              href="/privacy-policy"
+              className="hover:text-green-400 transition-colors duration-300"
+            >
+              Contact Us
+            </Link>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default LandingPage;
