@@ -2,9 +2,9 @@
 
 import React from "react";
 import { ThirdwebProvider, metamaskWallet } from "@thirdweb-dev/react";
-import ListingPage from "../../../Components/ListingPage";
+import BuyPage from "../../../Components/BuyPage";
 
-const Sell = () => {
+const Buy = () => {
   return (
     <ThirdwebProvider
       clientId={process.env.NEXT_PUBLIC_TEMPLATE_CLIENT_ID}
@@ -13,9 +13,9 @@ const Sell = () => {
       // supportedWallets={[coinbaseWallet()]}
       supportedWallets={[metamaskWallet()]}
     >
-      <ListingPage />
+      <BuyPage />
     </ThirdwebProvider>
   );
 };
 
-export default Sell;
+export default Buy;
