@@ -30,7 +30,6 @@ const Navbar = ({
   const pathname = usePathname();
 
   const navItems = [
-    { name: "Buy", href: "/buy" },
     { name: "Marketplace", href: "/marketplace" },
     { name: "Sell", href: "/sell" },
     { name: "Tokenize", href: "/tokenize" },
@@ -41,10 +40,9 @@ const Navbar = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <div className="flex items-center justify-center gap-4 font-semibold text-xl">
-              <img src="/logo.svg" />
-              <h1>CarbonDex</h1>
-            </div>
+          <Link href="/" className="text-3xl font-bold text-green-400">
+            CarbonDex
+          </Link>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
                 {navItems.map((item) => (
