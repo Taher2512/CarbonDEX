@@ -356,28 +356,7 @@ function BuyPage() {
                       placeholder="Enter token amount"
                     />
                   </div>
-                  {/* <div>
-                    <label
-                      htmlFor="priceUSD"
-                      className="block text-sm font-medium text-gray-400 mb-1"
-                    >
-                      Price in USD:
-                    </label>
-                    <input
-                      type="number"
-                      id="priceUSD"
-                      value={priceUSD}
-                      onChange={(e) => setPriceUSD(e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="Enter price in USD"
-                    />
-                  </div> */}
-                  {/* <button
-                    type="submit"
-                    className="w-full py-2 px-4 bg-green-500 hover:bg-green-600 text-white font-bold rounded-md transition-colors"
-                  >
-                    Create Listing
-                  </button> */}
+                  
                 </form>
               </CardContent>
             </Card>
