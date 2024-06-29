@@ -9,10 +9,12 @@ export const WavyDotPattern = ({
   dotWidth,
   dotHeight,
 }) => {
-  const [dotClickDisabled, setDotClickDisabled] = useState(false);
+  const [dotHoverDisabled, setDotHoverDisabled] = useState(false);
 
-  const handleDotClick = (e, width, height) => {
-    setDotClickDisabled(true);
+  const handleDotHover = (e, width, height) => {
+    if (dotHoverDisabled) return;
+
+    setDotHoverDisabled(true);
     anime({
       targets: ".dot-point",
       scale: [
@@ -32,7 +34,7 @@ export const WavyDotPattern = ({
         from: e.target.dataset.index,
       }),
     });
-    setTimeout(() => setDotClickDisabled(false), 2000);
+    setTimeout(() => setDotHoverDisabled(false), 2000);
   };
 
   const GRID_WIDTH = gridWidth || 30;
@@ -46,12 +48,11 @@ export const WavyDotPattern = ({
   for (let i = 0; i < GRID_WIDTH; i++) {
     for (let j = 0; j < GRID_HEIGHT; j++) {
       dots.push(
-        <button
+        <div
           className="rounded-[8px] p-[0.8rem]"
-          onClick={(e) => handleDotClick(e, GRID_WIDTH, GRID_HEIGHT)}
+          onMouseEnter={(e) => handleDotHover(e, GRID_WIDTH, GRID_HEIGHT)}
           data-index={index}
           key={`${i}-${j}`}
-          disabled={dotClickDisabled}
         >
           <div
             className={cn(
@@ -62,7 +63,7 @@ export const WavyDotPattern = ({
             )}
             data-index={index}
           />
-        </button>
+        </div>
       );
       index++;
     }
