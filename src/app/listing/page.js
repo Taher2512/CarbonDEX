@@ -8,8 +8,8 @@ const CarbonCreditListingPage = () => {
   return (
     <ThirdwebProvider
       clientId={process.env.NEXT_PUBLIC_TEMPLATE_CLIENT_ID}
-      // activeChain={"base-sepolia-testnet"}
-      activeChain={"sepolia"}
+      activeChain={"base-sepolia-testnet"}
+      // activeChain={"sepolia"}
       // supportedWallets={[coinbaseWallet()]}
       supportedWallets={[metamaskWallet()]}
     >

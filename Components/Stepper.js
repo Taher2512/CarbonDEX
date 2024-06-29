@@ -1,25 +1,92 @@
 "use client"
 
+import { useAddress, useSigner } from '@thirdweb-dev/react';
 import React, { useState, useEffect } from 'react';
+import { Alert } from './Alert';
+import { useRouter } from 'next/navigation';
+import { useContract, useContractEvents } from "@thirdweb-dev/react";
+import { ethers } from "ethers";
+const CCTokenization = require("../src/app/utils/CCTokenization.json");
+const Stepper = ({address,serialNo}) => {
+  const { contract: tokenization, isLoading: isTokenLoading } = useContract(
+    "0xA96658Fc034490F0E537bAC43ba48efE0B1C57e3",
+   CCTokenization
+  );
+  const [events, setEvents] = useState([]);
 
-const Stepper = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
+  const signer=useSigner()
+   const address1=useAddress()
+   const router=useRouter()
+   
+  const Tokenize = async () => {
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (currentStep < totalSteps) {
-        setCurrentStep(prevStep => prevStep + 1);
+    if ( tokenization) {
+       console.log("address",address1)
+      console.log("Tokenizing...")
+      // try {
+      //   const tokenizing = await tokenization.call("mintCredits", [address,serialNo]);
+        
+      // } catch (error) {
+      //   console.error("Error fetching balance:", error);
+      // }
+      try {
+        const getCertificate=await tokenization.call("getCertificateInfo",[serialNo]);
+        if(getCertificate[0]&&!getCertificate[2]){
+            setCurrentStep(2)
+            const tokenizing = await tokenization.call("mintCredits", [address,serialNo])
+          //  const tx=await tokenizing.wait() 
+           console.log("Transaction",tx)
+            setCurrentStep(3)
+        }
+         setCurrentStep(3)
+      } catch (error) {
+       console.log(error) 
       }
-    }, 2000); // Change step every 2 seconds
+    }
+  };
+  useEffect(() => {
+    // if(!address ||!serialNo){
+    //   console.log("Address serial",address,serial)
+    // router.push('/tokenize')
+    // }
+    // else{
+    //   Tokenize()
+    //   console.log("Tokenizing...")
+    //   console.log("newevents",newEvents)
+    //   if(newEvents){
+    //     console.log(newEvents)
+    //     setCurrentStep(2)
+    //     if(newEvents2){
+    //       setCurrentStep(3)
+    //     }
+    //     else if(error2){
+    //       alert("Error in tokenization")
+    //     }
+    //   }
+    //   else if(error){
+    //     alert("Error in tokenization")
+    //   }
+      
+    // }
+    // const timer = setTimeout(() => {
+    //   if (currentStep < totalSteps) {
+    //     setCurrentStep(prevStep => prevStep + 1);
+    //   }
+    // }, 2000); // Change step every 2 seconds
 
-    return () => clearTimeout(timer);
-  }, [currentStep]);
-
+    // return () => clearTimeout(timer);
+    if(address1){
+      Tokenize()
+    }
+   
+  },[address1,signer]);
+  
   return (
     <div className="max-w-2xl mx-auto p-12">
       <div className="relative">
-        {[1, 2, 3].map((step) => (
+        {[{step:1,topic:"Verifying"},{step:2,topic:"Validating"},{step:3,topic:"Tokenizing"}].map(({step,topic}) => (
           <div key={step} className="flex items-center mb-16">
             <div className="relative">
               <div
@@ -46,10 +113,8 @@ const Stepper = () => {
             }`}>
               <div className={`text-2xl font-bold mb-2 ${
                 step === currentStep ? 'text-white' : 'text-gray-700'
-              }`}>Step {step}</div>
-              <div className={`text-lg transition-all duration-1000 ease-in-out ${
-                step === currentStep ? 'text-gray-500' : 'text-gray-400'
-              }`}>This is the description for Step {step}</div>
+              }`}>{topic}</div>
+             
             </div>
           </div>
         ))}
