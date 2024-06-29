@@ -105,17 +105,18 @@ const LandingPage = () => {
             <p className="text-xl md:text-2xl text-gray-300 mb-10">
               Seamless. Transparent. Impactful.
             </p>
-            <ConnectWallet
+            <button
               style={{
                 backgroundColor: "rgb(22 163 74)",
                 borderWidth: 0,
                 fontSize: "1.25rem",
                 borderRadius: "9999px",
                 padding: "0.75rem 2rem",
+                fontWeight: "bold",
               }}
-              theme={"light"}
-              btnTitle="Join the Green Revolution"
-            />
+            >
+              Join the Green Revolution
+            </button>
           </div>
         </section>
 
