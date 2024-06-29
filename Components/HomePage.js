@@ -7,6 +7,8 @@ import { ConnectWallet } from '@thirdweb-dev/react';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, BarChart2, Globe, RefreshCw, Shield, Wallet, Menu, X, TrendingUp, Leaf, DollarSign } from 'lucide-react';
+import WavyDotPattern from './WavyDotPattern';
+
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -75,8 +77,8 @@ const LandingPage = () => {
       </div>
 
       <main className="pt-20">
-        <section className="h-screen flex items-center justify-center text-center px-4 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('/api/placeholder/1920/1080')] bg-cover bg-center opacity-20"></div>
+        <section className="h-screen flex items-center justify-center text-center px-4 relative  overflow-hidden">
+        <WavyDotPattern className={`w-full`}/>
           <div className="relative z-10 max-w-4xl mx-auto">
             <h2 className="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight">Revolutionizing Carbon Credit Trading in India and Beyond</h2>
             <p className="text-xl md:text-2xl text-gray-300 mb-10">Seamless. Transparent. Impactful.</p>
@@ -96,7 +98,7 @@ const LandingPage = () => {
                 { icon: <Shield className="w-16 h-16 text-green-400 mb-6" />, title: 'Unmatched Transparency', description: 'Blockchain technology ensures trust and traceability in every transaction.' },
                 { icon: <TrendingUp className="w-16 h-16 text-green-400 mb-6" />, title: 'Lightning-Fast Trading', description: 'On-chain logic accelerates transactions, outpacing traditional systems.' },
                 { icon: <Globe className="w-16 h-16 text-green-400 mb-6" />, title: 'Pioneer in India', description: "India's first decentralized carbon credit marketplace, tapping into a $1.2 billion market." },
-                { icon: <BarChart2 className="w-16 h-16 text-green-400 mb-6" />, title: 'Explosive Growth', description: 'Join a sector expanding at X% annually, with massive potential for early adopters.' },
+                { icon: <BarChart2 className="w-16 h-16 text-green-400 mb-6" />, title: 'Explosive Growth', description: 'Join a sector expanding at 14.8% annually, with massive potential for early adopters.' },
                 { icon: <Leaf className="w-16 h-16 text-green-400 mb-6" />, title: 'Eco-Friendly Profits', description: 'Earn returns while contributing to environmental sustainability.' },
                 { icon: <DollarSign className="w-16 h-16 text-green-400 mb-6" />, title: 'Global Opportunity', description: 'Tap into the $103.8 billion global carbon credit market.' },
               ].map((feature, index) => (
@@ -145,7 +147,7 @@ const LandingPage = () => {
                 <p className="text-3xl font-bold text-white">$103.8 Billion</p>
               </div>
             </div>
-            <p className="mt-12 text-xl text-gray-300">Join us in capturing this rapidly growing market, expanding at an unprecedented rate of X% annually.</p>
+            <p className="mt-12 text-xl text-gray-300">Join us in capturing this rapidly growing market, expanding at an unprecedented rate of 14.8% annually.</p>
           </div>
         </section>
 
