@@ -9,12 +9,13 @@ import { ethers } from "ethers";
 const CCTokenization = require("../src/app/utils/CCTokenization.json");
 const Stepper = ({address,serialNo}) => {
   const { contract: tokenization, isLoading: isTokenLoading } = useContract(
-    "0xA96658Fc034490F0E537bAC43ba48efE0B1C57e3",
+    process.env.NEXT_TOKENIZE_ADDRESS,
    CCTokenization
   );
   const [events, setEvents] = useState([]);
-
+   const [tokensMinted, settokensMinted] = useState(0)
   const [currentStep, setCurrentStep] = useState(1);
+  const [errorMsg, seterrorMsg] = useState('')
   const totalSteps = 3;
   const signer=useSigner()
    const address1=useAddress()
@@ -32,16 +33,25 @@ const Stepper = ({address,serialNo}) => {
       //   console.error("Error fetching balance:", error);
       // }
       try {
+        seterrorMsg('')
+        settokensMinted(0)
         const getCertificate=await tokenization.call("getCertificateInfo",[serialNo]);
         if(getCertificate[0]&&!getCertificate[2]){
             setCurrentStep(2)
+            const tokens=ethers.utils.formatUnits(getCertificate[1].toString(), 18)
             const tokenizing = await tokenization.call("mintCredits", [address,serialNo])
           //  const tx=await tokenizing.wait() 
-           console.log("Transaction",tx)
+          //  console.log("Transaction",tx)
             setCurrentStep(3)
+            settokensMinted(tokens)
         }
-         setCurrentStep(3)
+        else{
+          seterrorMsg("Certificate already tokenized")
+        }
+         
       } catch (error) {
+        settokensMinted(0)
+        seterrorMsg("Error in tokenization")
        console.log(error) 
       }
     }
@@ -119,7 +129,8 @@ const Stepper = ({address,serialNo}) => {
           </div>
         ))}
       </div>
-     
+       {tokensMinted&&<Alert className='text-white'>Tokens minted successfully {tokensMinted}</Alert>}
+       {errorMsg&&<Alert className='text-white border-red-600'>{errorMsg}</Alert>}
     </div>
   );
 };

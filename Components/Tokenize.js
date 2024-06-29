@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,11 @@ export default function Tokenize() {
       setImage(e.target.files[0]);
     }
   };
-
+ useEffect(()=>{
+  if(address1){
+    setAddress(address1)
+  }
+ },[address1])
   const handleTokenize = () => {
     // Implement tokenization logic here
    //how to go to a new page
@@ -76,7 +80,7 @@ export default function Tokenize() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="address">Address</Label>
+            <Label htmlFor="address"> Wallet Address</Label>
             <Input
               id="address"
               placeholder="Enter address"
