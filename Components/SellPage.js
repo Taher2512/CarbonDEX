@@ -9,6 +9,8 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  BarChart,
+  Bar,
 } from "recharts";
 import {
   User,
@@ -23,7 +25,12 @@ import {
 import { Alert, AlertDescription } from "./Alert";
 import { Card, CardHeader, CardContent, CardFooter } from "./Card";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "./Modal";
-import { ConnectWallet, useAddress, useContract } from "@thirdweb-dev/react";
+import {
+  ConnectWallet,
+  useAddress,
+  useContract,
+  useSigner,
+} from "@thirdweb-dev/react";
 import {
   addDoc,
   collection,
@@ -42,13 +49,13 @@ import Navbar from "./Navbar2";
 import { format } from "date-fns";
 
 const tokenAddress = "0xB0c0f1012567Fb1BEee089e64190a14b844A36b7";
-const exchangeAddress = "0xaCF60d7b13820A0EF21339Fe92Eb7d9727D30642";
+const exchangeAddress = "0x0E01eF728Af3EbDE5891dDfa1e9Ca03e54C68E64";
 const priceFeedAddress = "0x694AA1769357215DE4FAC081bf1f309aDC325306";
 const CarbonCreditToken = require("../src/app/utils/CarbonCreditToken.json");
 const CarbonCreditExchange = require("../src/app/utils/CarbonCreditExchange.json");
 const AggregatorV3InterfaceABI = require("../src/app/utils/AggregatorV3Interface.json");
 
-function ListingPage() {
+function SellPage() {
   const [chartData, setChartData] = useState([]);
   const [tokenAmount, setTokenAmount] = useState("");
   const [priceUSD, setPriceUSD] = useState("");
@@ -65,8 +72,10 @@ function ListingPage() {
   const [showModal, setShowModal] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [myBalance, setMyBalance] = useState(0);
+  const [selectedTab, setSelectedTab] = useState("price");
 
   const address = useAddress();
+  const signer = useSigner();
 
   const { contract: token, isLoading: isTokenLoading } = useContract(
     tokenAddress,
@@ -122,7 +131,11 @@ function ListingPage() {
         const data = await response.json();
         const formattedData = data.prices.map(([timestamp, price]) => ({
           date: format(new Date(timestamp), "dd-MMM-yy"),
-          price: price,
+          price: price * 100,
+          volume:
+            data.total_volumes.find(
+              ([volumeTimestamp, _]) => volumeTimestamp === timestamp
+            )?.[1] || 0,
         }));
         setChartData(formattedData);
 
@@ -143,7 +156,7 @@ function ListingPage() {
     const priceFeed = new ethers.Contract(
       priceFeedAddress,
       AggregatorV3InterfaceABI,
-      ""
+      signer
     );
     const latestRoundData = await priceFeed.latestRoundData();
     const price = ethers.utils.formatUnits(latestRoundData.answer, 8);
@@ -206,8 +219,7 @@ function ListingPage() {
     }
   };
 
-  const handleCreateListing = async (e) => {
-    e.preventDefault();
+  const handleCreateListing = async () => {
     if (tokenAmount && priceUSD) {
       try {
         await createListing(tokenAmount);
@@ -338,7 +350,7 @@ function ListingPage() {
                 </h2>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleCreateListing} className="space-y-4">
+                <div className="space-y-4">
                   <div>
                     <label
                       htmlFor="tokenAmount"
@@ -371,13 +383,7 @@ function ListingPage() {
                       placeholder="Enter price in USD"
                     />
                   </div>
-                  {/* <button
-                    type="submit"
-                    className="w-full py-2 px-4 bg-green-500 hover:bg-green-600 text-white font-bold rounded-md transition-colors"
-                  >
-                    Create Listing
-                  </button> */}
-                </form>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
@@ -419,7 +425,13 @@ function ListingPage() {
               {tokenAmount && priceUSD && (
                 <CardFooter>
                   <button
-                    onClick={handleCreateListing}
+                    onClick={() => {
+                      if (address) {
+                        handleCreateListing();
+                      } else {
+                        alert("Please connect your wallet first");
+                      }
+                    }}
                     className="w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-md transition-colors"
                   >
                     Confirm Listing
@@ -449,27 +461,73 @@ function ListingPage() {
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 ) : (
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={chartData}>
-                        <XAxis dataKey="date" stroke="#4ade80" />
-                        <YAxis stroke="#4ade80" />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "#1f2937",
-                            border: "none",
-                          }}
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey="price"
-                          stroke="#4ade80"
-                          strokeWidth={2}
-                          dot={false}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <div className="flex mb-6">
+                      <motion.button
+                        className={`mr-4 px-4 py-2 rounded-lg ${
+                          selectedTab === "price"
+                            ? "bg-green-600 text-white"
+                            : "text-gray-400"
+                        }`}
+                        onClick={() => setSelectedTab("price")}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        Price
+                      </motion.button>
+                      <motion.button
+                        className={`mr-4 px-4 py-2 rounded-lg ${
+                          selectedTab === "volume"
+                            ? "bg-green-600 text-white"
+                            : "text-gray-400"
+                        }`}
+                        onClick={() => setSelectedTab("volume")}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        Volume
+                      </motion.button>
+                    </div>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        {selectedTab === "price" ? (
+                          <LineChart data={chartData}>
+                            <XAxis dataKey="date" stroke="#4ade80" />
+                            <YAxis stroke="#4ade80" />
+                            <Tooltip
+                              contentStyle={{
+                                backgroundColor: "#1f2937",
+                                border: "none",
+                              }}
+                            />
+                            <Line
+                              type="monotone"
+                              dataKey="price"
+                              stroke="#4ade80"
+                              strokeWidth={2}
+                              dot={false}
+                            />
+                          </LineChart>
+                        ) : (
+                          <BarChart data={chartData}>
+                            <XAxis dataKey="date" stroke="#4ade80" />
+                            <YAxis stroke="#4ade80" />
+                            <Tooltip
+                              contentStyle={{
+                                backgroundColor: "#1f2937",
+                                border: "none",
+                              }}
+                            />
+                            <Bar dataKey="volume" fill="#4ade80" />
+                          </BarChart>
+                        )}
+                      </ResponsiveContainer>
+                    </div>
+                  </motion.div>
                 )}
               </CardContent>
             </Card>
@@ -524,7 +582,7 @@ function ListingPage() {
               <tbody className="divide-y divide-gray-600">
                 {listings.map((listing) => (
                   <tr key={listing.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <td className="px-6 py-4 whitespace-nowrap text-center text-gray-400">
                       {listing.createdAt &&
                         listing.createdAt.toDate() &&
                         format(
@@ -589,4 +647,4 @@ function ListingPage() {
   );
 }
 
-export default ListingPage;
+export default SellPage;

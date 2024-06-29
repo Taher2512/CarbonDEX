@@ -7,6 +7,8 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  BarChart,
+  Bar,
 } from "recharts";
 import {
   User,
@@ -45,7 +47,7 @@ import { format } from "date-fns";
 import { ethers } from "ethers";
 
 const tokenAddress = "0xB0c0f1012567Fb1BEee089e64190a14b844A36b7";
-const exchangeAddress = "0xaCF60d7b13820A0EF21339Fe92Eb7d9727D30642";
+const exchangeAddress = "0x0E01eF728Af3EbDE5891dDfa1e9Ca03e54C68E64";
 const priceFeedAddress = "0x694AA1769357215DE4FAC081bf1f309aDC325306";
 const CarbonCreditToken = require("../src/app/utils/CarbonCreditToken.json");
 const CarbonCreditExchange = require("../src/app/utils/CarbonCreditExchange.json");
@@ -64,6 +66,7 @@ const MarketplacePage = () => {
   const [listings, setListings] = useState([]);
   const [activeTab, setActiveTab] = useState("marketplace");
   const [copiedMessage, setCopiedMessage] = useState("");
+  const [selectedTab, setSelectedTab] = useState("price");
 
   const address = useAddress();
   const signer = useSigner();
@@ -124,13 +127,15 @@ const MarketplacePage = () => {
       }
     );
 
-    getMyBalance();
-
     return () => {
       unsubscribeListings();
       unsubscribeTransactions();
     };
   }, []);
+
+  useEffect(() => {
+    getMyBalance();
+  }, [address, token]);
 
   const getMyBalance = async () => {
     if (address && token) {
@@ -150,7 +155,7 @@ const MarketplacePage = () => {
       );
       const data = await response.json();
       const latestPrice = data["moss-carbon-credit"].usd;
-      setCurrentPrice(latestPrice);
+      setCurrentPrice(latestPrice * 100);
     } catch (error) {
       console.error("Error fetching latest price:", error);
       setError("Failed to fetch the latest price. Please try again later.");
@@ -165,7 +170,11 @@ const MarketplacePage = () => {
       const data = await response.json();
       const formattedData = data.prices.map(([timestamp, price]) => ({
         date: format(new Date(timestamp), "dd-MMM-yy"),
-        price: price,
+        price: price * 100,
+        volume:
+          data.total_volumes.find(
+            ([volumeTimestamp, _]) => volumeTimestamp === timestamp
+          )?.[1] || 0,
       }));
       setChartData(formattedData);
       // Set the current price to the latest price in the chart data
@@ -284,10 +293,7 @@ const MarketplacePage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
           <div>
             <h3 className="text-lg font-medium mb-2 text-gray-300">Balance</h3>
-            <p className="text-2xl font-bold text-green-500">
-              {myBalance} CCT
-              {/* ${accountValue.toFixed(2)} */}
-            </p>
+            <p className="text-2xl font-bold text-green-500">{myBalance} CCT</p>
             <div className="mt-2 text-sm text-gray-400">
               <p>Value: ${(myBalance * currentPrice).toFixed(2)}</p>
               <p>Price: ${currentPrice.toFixed(2)} (per CCT)</p>
@@ -354,8 +360,8 @@ const MarketplacePage = () => {
         <div className="bg-gray-800 p-6 rounded-lg shadow-lg ">
           <h2 className="text-2xl font-bold mb-4">Details</h2>
 
-          <div className="mt-6">
-            <div className="space-y-4 mt-10">
+          <div className="mt-12">
+            <div className="space-y-6 mt-10">
               <div className="flex justify-between">
                 <span>Address:</span>
                 <span className="text-green-400">
@@ -390,27 +396,73 @@ const MarketplacePage = () => {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           ) : (
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData}>
-                  <XAxis dataKey="date" stroke="#4ade80" />
-                  <YAxis stroke="#4ade80" />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#1f2937",
-                      border: "none",
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="price"
-                    stroke="#4ade80"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <div className="flex mb-6">
+                <motion.button
+                  className={`mr-4 px-4 py-2 rounded-lg ${
+                    selectedTab === "price"
+                      ? "bg-green-600 text-white"
+                      : "text-gray-400"
+                  }`}
+                  onClick={() => setSelectedTab("price")}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Price
+                </motion.button>
+                <motion.button
+                  className={`mr-4 px-4 py-2 rounded-lg ${
+                    selectedTab === "volume"
+                      ? "bg-green-600 text-white"
+                      : "text-gray-400"
+                  }`}
+                  onClick={() => setSelectedTab("volume")}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Volume
+                </motion.button>
+              </div>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  {selectedTab === "price" ? (
+                    <LineChart data={chartData}>
+                      <XAxis dataKey="date" stroke="#4ade80" />
+                      <YAxis stroke="#4ade80" />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "#1f2937",
+                          border: "none",
+                        }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="price"
+                        stroke="#4ade80"
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                    </LineChart>
+                  ) : (
+                    <BarChart data={chartData}>
+                      <XAxis dataKey="date" stroke="#4ade80" />
+                      <YAxis stroke="#4ade80" />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "#1f2937",
+                          border: "none",
+                        }}
+                      />
+                      <Bar dataKey="volume" fill="#4ade80" />
+                    </BarChart>
+                  )}
+                </ResponsiveContainer>
+              </div>
+            </motion.div>
           )}
         </div>
 
@@ -457,6 +509,9 @@ const MarketplacePage = () => {
                             Date
                           </th>
                           <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                            Seller
+                          </th>
+                          <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
                             Amount
                           </th>
                           <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
@@ -470,11 +525,20 @@ const MarketplacePage = () => {
                       <tbody className="divide-y divide-gray-600">
                         {listings.map((listing) => (
                           <tr key={listing.id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">
+                            <td className="px-6 py-4 whitespace-nowrap text-center text-gray-400">
                               {format(
                                 new Date(listing.createdAt.toDate()),
                                 "dd-MMM-yyyy"
                               )}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-center">
+                              {listing.address.slice(0, 6)}...
+                              {listing.address.slice(-5)}
+                              <CopyIcon
+                                className="inline-block ml-2 cursor-pointer"
+                                size={16}
+                                onClick={() => handleCopy(listing.address)}
+                              />
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-center">
                               {listing.amount}
@@ -485,14 +549,20 @@ const MarketplacePage = () => {
                             <td className="px-6 py-4 whitespace-nowrap text-center">
                               {listing.address !== address && (
                                 <button
-                                  onClick={() =>
-                                    handleBuyListedTokens(
-                                      listing.id,
-                                      listing.amount,
-                                      listing.price,
-                                      listing.address
-                                    )
-                                  }
+                                  onClick={() => {
+                                    if (address) {
+                                      handleBuyListedTokens(
+                                        listing.id,
+                                        listing.amount,
+                                        listing.price,
+                                        listing.address
+                                      );
+                                    } else {
+                                      alert(
+                                        "Please connect your wallet to buy tokens"
+                                      );
+                                    }
+                                  }}
                                   className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
                                 >
                                   Buy
@@ -521,6 +591,9 @@ const MarketplacePage = () => {
                       <thead className="bg-gray-700">
                         <tr>
                           <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                            Date
+                          </th>
+                          <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
                             Buyer
                           </th>
                           <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
@@ -537,6 +610,12 @@ const MarketplacePage = () => {
                       <tbody className="divide-y divide-gray-600">
                         {transactions.map((transaction) => (
                           <tr key={transaction.id}>
+                            <td className="px-6 py-4 whitespace-nowrap text-center text-gray-400">
+                              {format(
+                                new Date(transaction.createdAt.toDate()),
+                                "dd-MMM-yyyy"
+                              )}
+                            </td>
                             <td className="px-6 py-4 whitespace-nowrap text-center">
                               {transaction.buyer.slice(0, 6)}...
                               {transaction.buyer.slice(-5)}

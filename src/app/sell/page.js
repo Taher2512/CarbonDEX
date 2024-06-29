@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ThirdwebProvider, metamaskWallet } from "@thirdweb-dev/react";
-import ListingPage from "../../../Components/ListingPage";
+import SellPage from "../../../Components/SellPage";
 
 const Sell = () => {
   return (
@@ -13,7 +13,7 @@ const Sell = () => {
       // supportedWallets={[coinbaseWallet()]}
       supportedWallets={[metamaskWallet()]}
     >
-      <ListingPage />
+      <SellPage />
     </ThirdwebProvider>
   );
 };

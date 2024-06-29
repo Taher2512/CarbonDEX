@@ -23,7 +23,12 @@ import {
 import { Alert, AlertDescription } from "./Alert";
 import { Card, CardHeader, CardContent, CardFooter } from "./Card";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "./Modal";
-import { ConnectWallet, useAddress, useContract } from "@thirdweb-dev/react";
+import {
+  ConnectWallet,
+  useAddress,
+  useContract,
+  useSigner,
+} from "@thirdweb-dev/react";
 import {
   addDoc,
   collection,
@@ -42,7 +47,7 @@ import Navbar from "./Navbar2";
 import { format } from "date-fns";
 
 const tokenAddress = "0xB0c0f1012567Fb1BEee089e64190a14b844A36b7";
-const exchangeAddress = "0xaCF60d7b13820A0EF21339Fe92Eb7d9727D30642";
+const exchangeAddress = "0x0E01eF728Af3EbDE5891dDfa1e9Ca03e54C68E64";
 const priceFeedAddress = "0x694AA1769357215DE4FAC081bf1f309aDC325306";
 const CarbonCreditToken = require("../src/app/utils/CarbonCreditToken.json");
 const CarbonCreditExchange = require("../src/app/utils/CarbonCreditExchange.json");
@@ -52,7 +57,7 @@ function BuyPage() {
   const [chartData, setChartData] = useState([]);
   const [tokenAmount, setTokenAmount] = useState("");
   const [priceUSD, setPriceUSD] = useState("");
-  const [listings, setListings] = useState([]);
+  const [purchases, setPurchases] = useState([]);
   const [error, setError] = useState(null);
   const [currentPrice, setCurrentPrice] = useState(0);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -61,13 +66,14 @@ function BuyPage() {
     cash: 5000,
     price: 10,
   });
-  const [totalListings, setTotalListings] = useState(0);
+  const [totalPurchases, setTotalPurchases] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [myBalance, setMyBalance] = useState(0);
-
+  const [ethUsdPrice, setEthUsdPrice] = useState(0);
 
   const address = useAddress();
+  const signer = useSigner();
 
   const { contract: token, isLoading: isTokenLoading } = useContract(
     tokenAddress,
@@ -95,15 +101,18 @@ function BuyPage() {
 
   useEffect(() => {
     if (address) {
-      const q = query(collection(db, "listings"), orderBy("createdAt", "desc"));
+      const q = query(
+        collection(db, "purchases"),
+        orderBy("createdAt", "desc")
+      );
 
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const arr = querySnapshot.docs
           .map((doc) => ({ id: doc.id, ...doc.data() }))
           .filter((item) => item.address === address);
 
-        setListings(arr);
-        setTotalListings(arr.length);
+        setPurchases(arr);
+        setTotalPurchases(arr.length);
       });
       getMyBalance();
 
@@ -123,7 +132,7 @@ function BuyPage() {
         const data = await response.json();
         const formattedData = data.prices.map(([timestamp, price]) => ({
           date: format(new Date(timestamp), "dd-MMM-yy"),
-          price: price,
+          price: price * 100,
         }));
         setChartData(formattedData);
 
@@ -144,7 +153,7 @@ function BuyPage() {
     const priceFeed = new ethers.Contract(
       priceFeedAddress,
       AggregatorV3InterfaceABI,
-      ""
+      signer
     );
     const latestRoundData = await priceFeed.latestRoundData();
     const price = ethers.utils.formatUnits(latestRoundData.answer, 8);
@@ -152,69 +161,57 @@ function BuyPage() {
     return Math.round(price);
   }
 
-  const createListing = async (tokenAmount) => {
-    const tokenAmountInWei = ethers.utils.parseUnits(
-      tokenAmount.toString(),
-      18
-    );
+  const buyTokens = async (tokenAmount, tokenPrice) => {
     try {
-      const tokenBalance = await token.call("balanceOf", [address]);
-      const q = query(
-        collection(db, "listings"),
-        where("address", "==", address)
+      const totalUSDPrice = ethers.utils.parseUnits(
+        (tokenAmount * 0.005).toString(),
+        18
       );
-      const querySnapshot = await getDocs(q);
-      const totalListedTokens = querySnapshot.docs.reduce((acc, doc) => {
-        const data = doc.data();
-        const listedAmountInWei = ethers.utils.parseUnits(
-          data.amount.toString(),
-          18
-        );
-        return acc.add(listedAmountInWei);
-      }, ethers.BigNumber.from(0));
+      const ethPrice = await getLatestEthUsdPrice();
+      const priceInWei = totalUSDPrice.div(ethPrice);
+      const newPriceInWei = priceInWei.add(
+        ethers.utils.parseUnits("0.00001", 18)
+      );
+      console.log("Total Price:", newPriceInWei);
 
-      const availableBalance = tokenBalance.sub(totalListedTokens);
-      if (availableBalance.lt(tokenAmountInWei)) {
-        alert("Not enough tokens to list");
+      const accountBalance = await signer.provider.getBalance(address);
+      console.log("Account balance:", accountBalance.toString());
+      console.log("Total Price:", newPriceInWei.toString());
+      if (accountBalance.lt(newPriceInWei)) {
+        alert("Insufficient funds for the transaction");
         return;
       }
 
-      const approveTx = await token.call("approve", [
-        exchangeAddress,
-        tokenAmountInWei,
-      ]);
+      // const tx = await exchange.call("buyTokens", [tokenAmount, tokenPrice], {
+      //   value: newPriceInWei,
+      // });
+      // alert("Tokens purchased successfully!");
 
-      const allowance = await token.call("allowance", [
-        address,
-        exchangeAddress,
-      ]);
-
-      const listingData = {
+      const purchaseData = {
         address: address,
         amount: tokenAmount,
-        price: priceUSD,
+        price: tokenPrice.toFixed(2),
         status: 0,
         createdAt: serverTimestamp(),
       };
-      let res = await addDoc(collection(db, "listings"), listingData);
+      let res = await addDoc(collection(db, "purchases"), purchaseData);
+      console.log(res);
       setTokenAmount("");
-      setPriceUSD("");
       setShowSuccessAlert(true);
       setTimeout(() => setShowSuccessAlert(false), 3000);
-      setTotalListings(totalListings + 1);
+      setTotalPurchases(totalPurchases + 1);
     } catch (error) {
-      console.error("Error creating listing:", error);
+      console.error("Error making purchase:", error);
     }
   };
 
-  const handleCreateListing = async (e) => {
-    e.preventDefault();
-    if (tokenAmount && priceUSD) {
+  const handleBuyTokens = async () => {
+    if (tokenAmount) {
       try {
-        await createListing(tokenAmount);
+        await buyTokens(tokenAmount, currentPrice);
       } catch (error) {
         console.error("Error creating listing:", error);
-        alert("Failed to create listing.");
+        alert("Enter token amount");
       }
     }
   };
@@ -275,7 +272,7 @@ function BuyPage() {
                 Account Stats
               </h3>
               <p className="text-sm text-gray-400">
-                Total Listings: {totalListings}
+                Total Purchases: {totalPurchases}
               </p>
               <p className="text-sm text-gray-400">Account Type: Standard</p>
               <p className="text-sm text-gray-400">
@@ -339,7 +336,7 @@ function BuyPage() {
                 </h2>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleCreateListing} className="space-y-4">
+                <div className="space-y-4">
                   <div>
                     <label
                       htmlFor="tokenAmount"
@@ -356,8 +353,7 @@ function BuyPage() {
                       placeholder="Enter token amount"
                     />
                   </div>
-                  
-                </form>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
@@ -377,10 +373,12 @@ function BuyPage() {
                 {tokenAmount ? (
                   <>
                     <p className="flex items-center mb-2">
-                      <DollarSign className="mr-2" /> Amount: {tokenAmount} tokens
+                      <DollarSign className="mr-2" /> Amount: {tokenAmount}{" "}
+                      tokens
                     </p>
                     <p className="flex items-center mb-2">
-                      <TrendingUp className="mr-2" /> Price: ${currentPrice.toFixed(2)}
+                      <TrendingUp className="mr-2" /> Price: $
+                      {currentPrice.toFixed(2)}
                     </p>
                     <p className="flex items-center font-bold">
                       <DollarSign className="mr-2" /> Total: $
@@ -396,78 +394,19 @@ function BuyPage() {
               {tokenAmount && (
                 <CardFooter>
                   <button
-                    onClick={handleCreateListing}
+                    onClick={() => {
+                      if (address) {
+                        handleBuyTokens();
+                      } else {
+                        alert("Please connect your wallet");
+                      }
+                    }}
                     className="w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-md transition-colors"
                   >
                     Confirm Purchase
                   </button>
                 </CardFooter>
               )}
-            </Card>
-          </motion.div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
-          <motion.div
-            className="lg:col-span-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <Card className="bg-gray-800 shadow-lg">
-              <CardHeader>
-                <h2 className="text-xl font-semibold text-green-400">
-                  Market Overview
-                </h2>
-              </CardHeader>
-              <CardContent>
-                {error ? (
-                  <Alert variant="destructive">
-                    <AlertDescription>{error}</AlertDescription>
-                  </Alert>
-                ) : (
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={chartData}>
-                        <XAxis dataKey="date" stroke="#4ade80" />
-                        <YAxis stroke="#4ade80" />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "#1f2937",
-                            border: "none",
-                          }}
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey="price"
-                          stroke="#4ade80"
-                          strokeWidth={2}
-                          dot={false}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-          >
-            <Card className="bg-gray-800 shadow-lg h-full">
-              <CardHeader>
-                <h2 className="text-xl font-semibold text-green-400">
-                  Current Price
-                </h2>
-              </CardHeader>
-              <CardContent className="h-3/4 flex items-center justify-center">
-                <div className="text-4xl font-bold text-center">
-                  ${currentPrice ? currentPrice.toFixed(2) : "-"}
-                </div>
-              </CardContent>
             </Card>
           </motion.div>
         </div>
@@ -493,41 +432,30 @@ function BuyPage() {
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Price (USD)
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Action
-                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-600">
-                {listings.map((listing) => (
-                  <tr key={listing.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {listing.createdAt &&
-                        listing.createdAt.toDate() &&
+                {purchases.map((purchase) => (
+                  <tr key={purchase.id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-center text-gray-400">
+                      {purchase.createdAt &&
+                        purchase.createdAt.toDate() &&
                         format(
-                          new Date(listing.createdAt.toDate()),
+                          new Date(purchase.createdAt.toDate()),
                           "dd-MMM-yyyy"
                         )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {listing.amount}
+                      {purchase.amount}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                      ${listing.price}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <button
-                        onClick={() => handleRemoveListing(listing.id)}
-                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded inline-flex items-center"
-                      >
-                        Remove
-                      </button>
+                      ${purchase.price}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            {totalListings === 0 && (
+            {totalPurchases === 0 && (
               <div className="p-4 text-center text-green-400">
                 You have no purchases
               </div>
@@ -537,7 +465,7 @@ function BuyPage() {
 
         {showSuccessAlert && (
           <Alert className="mt-4 bg-green-500 text-white">
-            <AlertDescription>Listing created successfully!</AlertDescription>
+            <AlertDescription>Purchase made successfully!</AlertDescription>
           </Alert>
         )}
 
