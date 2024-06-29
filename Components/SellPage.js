@@ -50,6 +50,8 @@ import { format } from "date-fns";
 
 const tokenAddress = "0xB0c0f1012567Fb1BEee089e64190a14b844A36b7";
 const exchangeAddress = "0x0E01eF728Af3EbDE5891dDfa1e9Ca03e54C68E64";
+// const tokenAddress = "0x6D13297026894C958807F34957e58D7CAC18C5A6";
+// const exchangeAddress = "0x8af7B3cF7c97956a4DB75adB9738f422540C664b";
 const priceFeedAddress = "0x694AA1769357215DE4FAC081bf1f309aDC325306";
 const CarbonCreditToken = require("../src/app/utils/CarbonCreditToken.json");
 const CarbonCreditExchange = require("../src/app/utils/CarbonCreditExchange.json");
@@ -94,7 +96,9 @@ function SellPage() {
     if (address && token) {
       try {
         const balance = await token.call("balanceOf", [address]);
+        console.log("Balance : ",balance)
         setMyBalance(ethers.utils.formatUnits(balance.toString(), 18));
+        
       } catch (error) {
         console.error("Error fetching balance:", error);
       }
