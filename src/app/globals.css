@@ -79,3 +79,7 @@
   .bg-green{
     background-color: aquamarine;
   }
+
+  *::-webkit-scrollbar{
+    display: none;
+}

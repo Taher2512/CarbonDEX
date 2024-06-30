@@ -16,6 +16,7 @@ import {
   Leaf,
   DollarSign,
 } from "lucide-react";
+import WavyDotPattern from "./WavyDotPattern";
 import Footer from "./Footer";
 
 const LandingPage = () => {
@@ -97,8 +98,8 @@ const LandingPage = () => {
       </div>
 
       <main className="pt-20">
-        <section className="h-screen flex items-center justify-center text-center px-4 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('/api/placeholder/1920/1080')] bg-cover bg-center opacity-20"></div>
+        <section className="h-screen flex items-center justify-center text-center px-4 relative  overflow-hidden">
+          <WavyDotPattern className={`w-full`} />
           <div className="relative z-10 max-w-4xl mx-auto">
             <h2 className="text-5xl md:text-7xl font-bold mb-6 text-white leading-tight">
               Revolutionizing Carbon Credit Trading in India and Beyond
@@ -251,34 +252,7 @@ const LandingPage = () => {
           </div>
         </section>
       </main>
-
       <Footer />
-
-      {/* <footer className="bg-gray-900 text-gray-400 py-12">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-          <p>&copy; 2024 CarbonDex. All rights reserved.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link
-              href="/privacy-policy"
-              className="hover:text-green-400 transition-colors duration-300"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href="/terms-of-service"
-              className="hover:text-green-400 transition-colors duration-300"
-            >
-              Terms of Service
-            </Link>
-            <Link
-              href="/contact"
-              className="hover:text-green-400 transition-colors duration-300"
-            >
-              Contact Us
-            </Link>
-          </div>
-        </div>
-      </footer> */}
     </div>
   );
 };
