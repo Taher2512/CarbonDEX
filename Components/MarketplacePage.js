@@ -220,14 +220,6 @@ const MarketplacePage = () => {
         ethers.utils.parseUnits("0.00001", 18)
       );
 
-      const tokenBalance = await token.call("balanceOf", [exchangeAddress]);
-      const tokenAmount = ethers.utils.parseUnits(amount.toString(), 18);
-
-      if (tokenBalance.lt(tokenAmount)) {
-        alert("Not enough tokens available");
-        return;
-      }
-
       const accountBalance = await signer.provider.getBalance(address);
       if (accountBalance.lt(newPriceInWei)) {
         alert("Insufficient funds for the transaction");
