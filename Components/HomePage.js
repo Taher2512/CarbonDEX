@@ -17,7 +17,7 @@ import {
   Leaf,
   DollarSign,
   Bitcoin,
-  Waypoints,
+  Layers,
 } from "lucide-react";
 import WavyDotPattern from "./WavyDotPattern";
 import Footer from "./Footer";
@@ -157,7 +157,7 @@ const LandingPage = () => {
                   icon: <BarChart2 className="w-16 h-16 text-green-400 mb-6" />,
                   title: "Explosive Growth",
                   description:
-                    "Join a sector expanding at X% annually, with massive potential for early adopters.",
+                    "Join a sector expanding at 24.4% annually, with massive potential for early adopters.",
                 },
                 {
                   icon: <Leaf className="w-16 h-16 text-green-400 mb-6" />,
@@ -195,28 +195,26 @@ const LandingPage = () => {
               How It Works
             </h3>
             <span className=" flex gap-32">
-
-            <div className="max-w-3xl mx-auto">
-              {[
-                "Register and verify your account",
-                "List your carbon credits or browse available offerings",
-                "Use our advanced matching algorithm to find the best deals",
-                "Complete secure transactions with blockchain technology",
-                "Track your impact and receive detailed reports",
-              ].map((step, index) => (
-                <div key={index} className="flex items-center mb-12 group">
-                  <div className="bg-green-500 text-gray-900 rounded-full w-12 h-12 flex items-center justify-center mr-6 text-xl font-bold transition-all duration-300 group-hover:scale-110">
-                    {index + 1}
+              <div className="max-w-3xl mx-auto">
+                {[
+                  "Register and verify your account",
+                  "List your carbon credits or browse available offerings",
+                  "Use our advanced matching algorithm to find the best deals",
+                  "Complete secure transactions with blockchain technology",
+                  "Track your impact and receive detailed reports",
+                ].map((step, index) => (
+                  <div key={index} className="flex items-center mb-12 group">
+                    <div className="bg-green-500 text-gray-900 rounded-full w-12 h-12 flex items-center justify-center mr-6 text-xl font-bold transition-all duration-300 group-hover:scale-110">
+                      {index + 1}
+                    </div>
+                    <p className="text-xl text-gray-300 group-hover:text-green-400 transition-colors duration-300">
+                      {step}
+                    </p>
                   </div>
-                  <p className="text-xl text-gray-300 group-hover:text-green-400 transition-colors duration-300">
-                    {step}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <Waypoints className="w-96 h-96 text-green-500" />
+                ))}
+              </div>
+              <Layers className="w-96 h-96 text-green-500 mr-20" />
             </span>
-
           </div>
         </section>
 
@@ -255,9 +253,11 @@ const LandingPage = () => {
               Join CarbonDex today. Profit from sustainability and help create a
               greener future.
             </p>
-            <button className="bg-green-500 text-gray-900 px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-400 transition-all duration-300 transform hover:scale-105 flex items-center mx-auto">
-              Get Started Now <ArrowRight className="ml-2" />
-            </button>
+            <Link href="/marketplace">
+              <button className="bg-green-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-400 transition-all duration-300 transform hover:scale-105 flex items-center mx-auto">
+                Get Started Now <ArrowRight className="ml-2" />
+              </button>
+            </Link>
           </div>
         </section>
       </main>
