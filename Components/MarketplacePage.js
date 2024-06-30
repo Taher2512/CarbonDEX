@@ -217,7 +217,7 @@ const MarketplacePage = () => {
       const ethPrice = await getLatestEthUsdPrice();
       const priceInWei = totalUSDPrice.div(ethPrice);
       const newPriceInWei = priceInWei.add(
-        ethers.utils.parseUnits("0.00001", 18)
+        ethers.utils.parseUnits("0.0001", 18)
       );
 
       const accountBalance = await signer.provider.getBalance(address);
