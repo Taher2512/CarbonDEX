@@ -47,11 +47,11 @@ import { format } from "date-fns";
 import { ethers } from "ethers";
 import Footer from "./Footer";
 
-const tokenAddress = "0xB0c0f1012567Fb1BEee089e64190a14b844A36b7";
-const exchangeAddress = "0x0E01eF728Af3EbDE5891dDfa1e9Ca03e54C68E64";
-const priceFeedAddress = "0x694AA1769357215DE4FAC081bf1f309aDC325306";
-const CarbonCreditToken = require("../src/app/utils/CarbonCreditToken.json");
-const CarbonCreditExchange = require("../src/app/utils/CarbonCreditExchange.json");
+const tokenAddress = "0x2181dCA9782E00C217D9a0e9570919A39EF530d8";
+const exchangeAddress = "0x2f5e216a8096e6e65228Fab61a1e3D246f718c0E";
+const priceFeedAddress = "0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1";
+const CarbonCreditTokenABI = require("../src/app/utils/CarbonCreditToken.json");
+const CarbonCreditExchangeABI = require("../src/app/utils/CarbonCreditExchange.json");
 const AggregatorV3InterfaceABI = require("../src/app/utils/AggregatorV3Interface.json");
 
 const MarketplacePage = () => {
@@ -74,11 +74,11 @@ const MarketplacePage = () => {
 
   const { contract: token, isLoading: isTokenLoading } = useContract(
     tokenAddress,
-    CarbonCreditToken.abi
+    CarbonCreditTokenABI
   );
   const { contract: exchange, isLoading: isExchangeLoading } = useContract(
     exchangeAddress,
-    CarbonCreditExchange.abi
+    CarbonCreditExchangeABI
   );
   const { contract: priceFeed, isLoading: isPriceFeedLoading } = useContract(
     priceFeedAddress,
@@ -220,13 +220,8 @@ const MarketplacePage = () => {
         ethers.utils.parseUnits("0.00001", 18)
       );
 
-      console.log("Price in Wei:", newPriceInWei.toString());
-
       const tokenBalance = await token.call("balanceOf", [exchangeAddress]);
       const tokenAmount = ethers.utils.parseUnits(amount.toString(), 18);
-
-      console.log("Token balance:", tokenBalance.toString());
-      console.log("Token amount:", tokenAmount.toString());
 
       if (tokenBalance.lt(tokenAmount)) {
         alert("Not enough tokens available");
@@ -234,14 +229,12 @@ const MarketplacePage = () => {
       }
 
       const accountBalance = await signer.provider.getBalance(address);
-      console.log("Account balance:", accountBalance);
       if (accountBalance.lt(newPriceInWei)) {
         alert("Insufficient funds for the transaction");
         return;
       }
 
       try {
-        console.log("Amount:", newPriceInWei.toString());
         const tx = await exchange.call(
           "buyListedTokens",
           [amount, sellerUSDTokenPrice, seller],

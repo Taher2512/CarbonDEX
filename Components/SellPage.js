@@ -49,18 +49,16 @@ import Navbar from "./Navbar2";
 import { format } from "date-fns";
 import Footer from "./Footer";
 
-const tokenAddress = "0xB0c0f1012567Fb1BEee089e64190a14b844A36b7";
-const exchangeAddress = "0x0E01eF728Af3EbDE5891dDfa1e9Ca03e54C68E64";
-// const tokenAddress = "0x6D13297026894C958807F34957e58D7CAC18C5A6";
-// const exchangeAddress = "0x8af7B3cF7c97956a4DB75adB9738f422540C664b";
-const priceFeedAddress = "0x694AA1769357215DE4FAC081bf1f309aDC325306";
-const CarbonCreditToken = require("../src/app/utils/CarbonCreditToken.json");
-const CarbonCreditExchange = require("../src/app/utils/CarbonCreditExchange.json");
+const tokenAddress = "0x2181dCA9782E00C217D9a0e9570919A39EF530d8";
+const exchangeAddress = "0x2f5e216a8096e6e65228Fab61a1e3D246f718c0E";
+const priceFeedAddress = "0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1";
+const CarbonCreditTokenABI = require("../src/app/utils/CarbonCreditToken.json");
+const CarbonCreditExchangeABI = require("../src/app/utils/CarbonCreditExchange.json");
 const AggregatorV3InterfaceABI = require("../src/app/utils/AggregatorV3Interface.json");
 
 function SellPage() {
   const [chartData, setChartData] = useState([]);
-  const [tokenAmount, setTokenAmount] = useState("");
+  const [tokenAmount, setTokenAmount] = useState(0);
   const [priceUSD, setPriceUSD] = useState("");
   const [listings, setListings] = useState([]);
   const [error, setError] = useState(null);
@@ -82,11 +80,11 @@ function SellPage() {
 
   const { contract: token, isLoading: isTokenLoading } = useContract(
     tokenAddress,
-    CarbonCreditToken.abi
+    CarbonCreditTokenABI
   );
   const { contract: exchange, isLoading: isExchangeLoading } = useContract(
     exchangeAddress,
-    CarbonCreditExchange.abi
+    CarbonCreditExchangeABI
   );
   const { contract: priceFeed, isLoading: isPriceFeedLoading } = useContract(
     priceFeedAddress,
@@ -97,7 +95,6 @@ function SellPage() {
     if (address && token) {
       try {
         const balance = await token.call("balanceOf", [address]);
-        console.log("Balance : ", balance);
         setMyBalance(ethers.utils.formatUnits(balance.toString(), 18));
       } catch (error) {
         console.error("Error fetching balance:", error);

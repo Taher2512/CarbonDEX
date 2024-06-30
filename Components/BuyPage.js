@@ -3,14 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import {
   User,
   CreditCard,
   Briefcase,
@@ -47,11 +39,11 @@ import Navbar from "./Navbar2";
 import { format } from "date-fns";
 import Footer from "./Footer";
 
-const tokenAddress = "0xB0c0f1012567Fb1BEee089e64190a14b844A36b7";
-const exchangeAddress = "0x0E01eF728Af3EbDE5891dDfa1e9Ca03e54C68E64";
-const priceFeedAddress = "0x694AA1769357215DE4FAC081bf1f309aDC325306";
-const CarbonCreditToken = require("../src/app/utils/CarbonCreditToken.json");
-const CarbonCreditExchange = require("../src/app/utils/CarbonCreditExchange.json");
+const tokenAddress = "0x2181dCA9782E00C217D9a0e9570919A39EF530d8";
+const exchangeAddress = "0x2f5e216a8096e6e65228Fab61a1e3D246f718c0E";
+const priceFeedAddress = "0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1";
+const CarbonCreditTokenABI = require("../src/app/utils/CarbonCreditToken.json");
+const CarbonCreditExchangeABI = require("../src/app/utils/CarbonCreditExchange.json");
 const AggregatorV3InterfaceABI = require("../src/app/utils/AggregatorV3Interface.json");
 
 function BuyPage() {
@@ -78,11 +70,11 @@ function BuyPage() {
 
   const { contract: token, isLoading: isTokenLoading } = useContract(
     tokenAddress,
-    CarbonCreditToken.abi
+    CarbonCreditTokenABI
   );
   const { contract: exchange, isLoading: isExchangeLoading } = useContract(
     exchangeAddress,
-    CarbonCreditExchange.abi
+    CarbonCreditExchangeABI
   );
   const { contract: priceFeed, isLoading: isPriceFeedLoading } = useContract(
     priceFeedAddress,
@@ -165,7 +157,7 @@ function BuyPage() {
   const buyTokens = async (tokenAmount, tokenPrice) => {
     try {
       const totalUSDPrice = ethers.utils.parseUnits(
-        (tokenAmount * 0.005).toString(),
+        (tokenAmount * Math.round(tokenPrice)).toString(),
         18
       );
       const ethPrice = await getLatestEthUsdPrice();
@@ -173,20 +165,22 @@ function BuyPage() {
       const newPriceInWei = priceInWei.add(
         ethers.utils.parseUnits("0.00001", 18)
       );
-      console.log("Total Price:", newPriceInWei);
 
       const accountBalance = await signer.provider.getBalance(address);
-      console.log("Account balance:", accountBalance.toString());
-      console.log("Total Price:", newPriceInWei.toString());
       if (accountBalance.lt(newPriceInWei)) {
         alert("Insufficient funds for the transaction");
         return;
       }
 
-      // const tx = await exchange.call("buyTokens", [tokenAmount, tokenPrice], {
-      //   value: newPriceInWei,
-      // });
-      // alert("Tokens purchased successfully!");
+      const tx = await exchange.call(
+        "buyTokens",
+        [tokenAmount, Math.round(tokenPrice)],
+        {
+          value: newPriceInWei,
+        }
+      );
+      setMyBalance((Number(myBalance) + Number(tokenAmount)).toFixed(1));
+      alert("Tokens purchased successfully!");
 
       const purchaseData = {
         address: address,
@@ -196,7 +190,6 @@ function BuyPage() {
         createdAt: serverTimestamp(),
       };
       let res = await addDoc(collection(db, "purchases"), purchaseData);
-      console.log(res);
       setTokenAmount("");
       setShowSuccessAlert(true);
       setTimeout(() => setShowSuccessAlert(false), 3000);
