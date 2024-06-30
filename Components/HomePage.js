@@ -3,6 +3,7 @@
 import { ConnectWallet } from "@thirdweb-dev/react";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { FaEthereum } from "react-icons/fa";
 import {
   ArrowRight,
   BarChart2,
@@ -140,9 +141,7 @@ const LandingPage = () => {
                 },
                 {
                   icon: (
-                    // <TrendingUp className="w-16 h-16 text-green-400 mb-6" />
-                    <Bitcoin className="w-16 h-16 text-green-400 mb-6" />
-                    // <Image src={'/eth.svg'} width={16} height={16}/>
+                    <FaEthereum className="w-16 h-16 text-green-400 mb-6" />
                   ),
                   title: "Trading On Base",
                   description:
