@@ -1,5 +1,4 @@
 "use client"
-
 import { useAddress, useSigner } from '@thirdweb-dev/react';
 import React, { useState, useEffect } from 'react';
 import { Alert } from './Alert';
@@ -7,9 +6,9 @@ import { useRouter } from 'next/navigation';
 import { useContract, useContractEvents } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
 const CCTokenization = require("../src/app/utils/CCTokenization.json");
-const Stepper = ({address,serialNo}) => {
+const Stepper = ({address,serialNo,contractAddress}) => {
   const { contract: tokenization, isLoading: isTokenLoading } = useContract(
-    process.env.NEXT_TOKENIZE_ADDRESS,
+    process.env.NEXT_PUBLIC_TOKENIZE_ADDRESS,
    CCTokenization
   );
   const [events, setEvents] = useState([]);
@@ -51,7 +50,7 @@ const Stepper = ({address,serialNo}) => {
          
       } catch (error) {
         settokensMinted(0)
-        seterrorMsg("Error in tokenization")
+        // seterrorMsg("Error in tokenization")
        console.log(error) 
       }
     }
@@ -87,6 +86,7 @@ const Stepper = ({address,serialNo}) => {
     // }, 2000); // Change step every 2 seconds
 
     // return () => clearTimeout(timer);
+    console.log("Token Address",process.env.NEXT_PUBLIC_TOKENIZE_ADDRESS)
     if(address1){
       Tokenize()
     }
@@ -129,8 +129,8 @@ const Stepper = ({address,serialNo}) => {
           </div>
         ))}
       </div>
-       {tokensMinted&&<Alert className='text-white'>Tokens minted successfully {tokensMinted}</Alert>}
-       {errorMsg&&<Alert className='text-white border-red-600'>{errorMsg}</Alert>}
+       {tokensMinted&&!errorMsg&&<Alert className='text-white'>{tokensMinted} Tokens minted successfully </Alert>}
+       {errorMsg&&!tokensMinted&&<Alert className='text-white border-red-600'>{errorMsg}</Alert>}
     </div>
   );
 };

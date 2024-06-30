@@ -15,7 +15,7 @@ export default function page({searchParams}) {
       supportedWallets={[metamaskWallet()]}
     >
    <main className="w-screen h-screen bg-gray-900">
-    <Stepper address={address} serialNo={serialNo} />
+    <Stepper contractAddress={process.env.NEXT_TOKENIZE_ADDRESS} address={address} serialNo={serialNo} />
     </main>
     </ThirdwebProvider>
   )
