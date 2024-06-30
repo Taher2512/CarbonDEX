@@ -16,6 +16,7 @@ import {
   Leaf,
   DollarSign,
 } from "lucide-react";
+import Footer from "./Footer";
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -251,7 +252,9 @@ const LandingPage = () => {
         </section>
       </main>
 
-      <footer className="bg-gray-900 text-gray-400 py-12">
+      <Footer />
+
+      {/* <footer className="bg-gray-900 text-gray-400 py-12">
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
           <p>&copy; 2024 CarbonDex. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
@@ -275,7 +278,7 @@ const LandingPage = () => {
             </Link>
           </div>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 };

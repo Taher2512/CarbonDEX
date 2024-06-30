@@ -45,6 +45,7 @@ import {
 import { db } from "../config";
 import { format } from "date-fns";
 import { ethers } from "ethers";
+import Footer from "./Footer";
 
 const tokenAddress = "0xB0c0f1012567Fb1BEee089e64190a14b844A36b7";
 const exchangeAddress = "0x0E01eF728Af3EbDE5891dDfa1e9Ca03e54C68E64";
@@ -278,389 +279,396 @@ const MarketplacePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-8 px-40">
-      <Navbar />
-      <motion.div
-        className="bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8 mb-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        <h2 className="text-2xl font-semibold mb-6 text-green-400 flex items-center">
-          <User className="mr-2" /> Account Overview
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
-          <div>
-            <h3 className="text-lg font-medium mb-2 text-gray-300">Balance</h3>
-            <p className="text-2xl font-bold text-green-500">{myBalance} CCT</p>
-            <div className="mt-2 text-sm text-gray-400">
-              <p>Value: ${(myBalance * currentPrice).toFixed(2)}</p>
-              <p>Price: ${currentPrice.toFixed(2)} (per CCT)</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-end">
-            <h3 className="text-lg font-medium mb-2 text-gray-300">
-              Account Stats
-            </h3>
-            {/* <p className="text-sm text-gray-400">
-              Total Listings: {totalListings}
-            </p> */}
-            <p className="text-sm text-gray-400">Account Type: Standard</p>
-            <p className="text-sm text-gray-400">
-              Member Since:{" "}
-              {new Intl.DateTimeFormat("en-GB", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              }).format(new Date())}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <motion.button
-            className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <CreditCard className="mb-2" />
-            <span className="text-sm">Deposit</span>
-          </motion.button>
-          <motion.button
-            className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Briefcase className="mb-2" />
-            <span className="text-sm">Withdraw</span>
-          </motion.button>
-          <motion.button
-            className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Settings className="mb-2" />
-            <span className="text-sm">Settings</span>
-          </motion.button>
-          <motion.button
-            className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <HelpCircle className="mb-2" />
-            <span className="text-sm">Support</span>
-          </motion.button>
-        </div>
-      </motion.div>
-
-      <div className="w-full mx-auto grid grid-cols-3 gap-8">
-        {/* Token Selection, Details, and Buy Functionality */}
-        <div className="bg-gray-800 p-6 rounded-lg shadow-lg ">
-          <h2 className="text-2xl font-bold mb-4">Details</h2>
-
-          <div className="mt-12">
-            <div className="space-y-6 mt-10">
-              <div className="flex justify-between">
-                <span>Address:</span>
-                <span className="text-green-400">
-                  {tokenAddress.slice(0, 6)}...{tokenAddress.slice(-4)}{" "}
-                  <CopyIcon
-                    className="inline-block ml-2 cursor-pointer"
-                    size={16}
-                    onClick={() => handleCopy(tokenAddress)}
-                  />
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Name:</span>
-                <span>Moss Carbon Credit</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Symbol:</span>
-                <span>{selectedToken}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Price USD:</span>
-                <span>${currentPrice.toFixed(4)}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Chart */}
-        <div className="col-span-2 bg-gray-800 p-6 rounded-lg shadow-lg">
-          {error ? (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <div className="flex mb-6">
-                <motion.button
-                  className={`mr-4 px-4 py-2 rounded-lg ${
-                    selectedTab === "price"
-                      ? "bg-green-600 text-white"
-                      : "text-gray-400"
-                  }`}
-                  onClick={() => setSelectedTab("price")}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Price
-                </motion.button>
-                <motion.button
-                  className={`mr-4 px-4 py-2 rounded-lg ${
-                    selectedTab === "volume"
-                      ? "bg-green-600 text-white"
-                      : "text-gray-400"
-                  }`}
-                  onClick={() => setSelectedTab("volume")}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Volume
-                </motion.button>
-              </div>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  {selectedTab === "price" ? (
-                    <LineChart data={chartData}>
-                      <XAxis dataKey="date" stroke="#4ade80" />
-                      <YAxis stroke="#4ade80" />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "#1f2937",
-                          border: "none",
-                        }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="price"
-                        stroke="#4ade80"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </LineChart>
-                  ) : (
-                    <BarChart data={chartData}>
-                      <XAxis dataKey="date" stroke="#4ade80" />
-                      <YAxis stroke="#4ade80" />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "#1f2937",
-                          border: "none",
-                        }}
-                      />
-                      <Bar dataKey="volume" fill="#4ade80" />
-                    </BarChart>
-                  )}
-                </ResponsiveContainer>
-              </div>
-            </motion.div>
-          )}
-        </div>
-
+    <div>
+      <div className="min-h-screen bg-gray-900 text-gray-100 p-8 px-40">
+        <Navbar />
         <motion.div
+          className="bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8 mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="col-span-3"
+          transition={{ delay: 0.2 }}
         >
-          <div>
-            <div className="flex mb-9">
-              <button
-                className={`px-4 py-2 w-1/2 focus:outline-none ${
-                  activeTab === "marketplace"
-                    ? "border-b-2 border-green-600"
-                    : ""
-                }`}
-                onClick={() => setActiveTab("marketplace")}
-              >
-                Marketplace
-              </button>
-              <button
-                className={`px-4 py-2 w-1/2 focus:outline-none ${
-                  activeTab === "transactions"
-                    ? "border-b-2 border-green-600"
-                    : ""
-                }`}
-                onClick={() => setActiveTab("transactions")}
-              >
-                Transactions
-              </button>
+          <h2 className="text-2xl font-semibold mb-6 text-green-400 flex items-center">
+            <User className="mr-2" /> Account Overview
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
+            <div>
+              <h3 className="text-lg font-medium mb-2 text-gray-300">
+                Balance
+              </h3>
+              <p className="text-2xl font-bold text-green-500">
+                {myBalance} CCT
+              </p>
+              <div className="mt-2 text-sm text-gray-400">
+                <p>Value: ${(myBalance * currentPrice).toFixed(2)}</p>
+                <p>Price: ${currentPrice.toFixed(2)} (per CCT)</p>
+              </div>
             </div>
-            <div className="mt-4">
-              {activeTab === "marketplace" && (
-                <div>
-                  <h2 className="text-2xl font-semibold mb-4 text-green-400">
-                    Marketplace
-                  </h2>
-                  <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-                    <table className="w-full">
-                      <thead className="bg-gray-700">
-                        <tr>
-                          <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                            Date
-                          </th>
-                          <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                            Seller
-                          </th>
-                          <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                            Amount
-                          </th>
-                          <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                            Price (USD)
-                          </th>
-                          <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                            Action
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-600">
-                        {listings.map((listing) => (
-                          <tr key={listing.id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-center text-gray-400">
-                              {format(
-                                new Date(listing.createdAt.toDate()),
-                                "dd-MMM-yyyy"
-                              )}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">
-                              {listing.address.slice(0, 6)}...
-                              {listing.address.slice(-5)}
-                              <CopyIcon
-                                className="inline-block ml-2 cursor-pointer"
-                                size={16}
-                                onClick={() => handleCopy(listing.address)}
-                              />
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">
-                              {listing.amount}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">
-                              ${listing.price}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">
-                              {listing.address !== address && (
-                                <button
-                                  onClick={() => {
-                                    if (address) {
-                                      handleBuyListedTokens(
-                                        listing.id,
-                                        listing.amount,
-                                        listing.price,
-                                        listing.address
-                                      );
-                                    } else {
-                                      alert(
-                                        "Please connect your wallet to buy tokens"
-                                      );
-                                    }
-                                  }}
-                                  className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
-                                >
-                                  Buy
-                                </button>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    {listings.length === 0 && (
-                      <div className="p-4 text-center text-green-400">
-                        No listings available
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-              {activeTab === "transactions" && (
-                <div>
-                  <h2 className="text-2xl font-semibold mb-4 text-green-400">
-                    Transactions
-                  </h2>
-                  <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-                    <table className="w-full">
-                      <thead className="bg-gray-700">
-                        <tr>
-                          <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                            Date
-                          </th>
-                          <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                            Buyer
-                          </th>
-                          <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                            Seller
-                          </th>
-                          <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                            Tokens
-                          </th>
-                          <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                            Price
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-600">
-                        {transactions.map((transaction) => (
-                          <tr key={transaction.id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-center text-gray-400">
-                              {format(
-                                new Date(transaction.createdAt.toDate()),
-                                "dd-MMM-yyyy"
-                              )}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">
-                              {transaction.buyer.slice(0, 6)}...
-                              {transaction.buyer.slice(-5)}
-                              <CopyIcon
-                                className="inline-block ml-2 cursor-pointer"
-                                size={16}
-                                onClick={() => handleCopy(transaction.buyer)}
-                              />
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">
-                              {transaction.seller.slice(0, 6)}...
-                              {transaction.seller.slice(-5)}
-                              <CopyIcon
-                                className="inline-block ml-2 cursor-pointer"
-                                size={16}
-                                onClick={() => handleCopy(transaction.seller)}
-                              />
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">
-                              {transaction.amount}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">
-                              ${transaction.price}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    {transactions.length === 0 && (
-                      <div className="p-4 text-center text-green-400">
-                        No transactions available
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+
+            <div className="flex flex-col items-end">
+              <h3 className="text-lg font-medium mb-2 text-gray-300">
+                Account Stats
+              </h3>
+              {/* <p className="text-sm text-gray-400">
+              Total Listings: {totalListings}
+            </p> */}
+              <p className="text-sm text-gray-400">Account Type: Standard</p>
+              <p className="text-sm text-gray-400">
+                Member Since:{" "}
+                {new Intl.DateTimeFormat("en-GB", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                }).format(new Date())}
+              </p>
             </div>
+          </div>
+
+          <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <motion.button
+              className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <CreditCard className="mb-2" />
+              <span className="text-sm">Deposit</span>
+            </motion.button>
+            <motion.button
+              className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Briefcase className="mb-2" />
+              <span className="text-sm">Withdraw</span>
+            </motion.button>
+            <motion.button
+              className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Settings className="mb-2" />
+              <span className="text-sm">Settings</span>
+            </motion.button>
+            <motion.button
+              className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <HelpCircle className="mb-2" />
+              <span className="text-sm">Support</span>
+            </motion.button>
           </div>
         </motion.div>
-        {copiedMessage && (
-          <div className="fixed bottom-4 right-4 bg-green-700 text-white p-4 rounded-lg shadow-lg">
-            {copiedMessage}
+
+        <div className="w-full mx-auto grid grid-cols-3 gap-8">
+          {/* Token Selection, Details, and Buy Functionality */}
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg ">
+            <h2 className="text-2xl font-bold mb-4">Details</h2>
+
+            <div className="mt-12">
+              <div className="space-y-6 mt-10">
+                <div className="flex justify-between">
+                  <span>Address:</span>
+                  <span className="text-green-400">
+                    {tokenAddress.slice(0, 6)}...{tokenAddress.slice(-4)}{" "}
+                    <CopyIcon
+                      className="inline-block ml-2 cursor-pointer"
+                      size={16}
+                      onClick={() => handleCopy(tokenAddress)}
+                    />
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Name:</span>
+                  <span>Moss Carbon Credit</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Symbol:</span>
+                  <span>{selectedToken}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Price USD:</span>
+                  <span>${currentPrice.toFixed(4)}</span>
+                </div>
+              </div>
+            </div>
           </div>
-        )}
+
+          {/* Chart */}
+          <div className="col-span-2 bg-gray-800 p-6 rounded-lg shadow-lg">
+            {error ? (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <div className="flex mb-6">
+                  <motion.button
+                    className={`mr-4 px-4 py-2 rounded-lg ${
+                      selectedTab === "price"
+                        ? "bg-green-600 text-white"
+                        : "text-gray-400"
+                    }`}
+                    onClick={() => setSelectedTab("price")}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Price
+                  </motion.button>
+                  <motion.button
+                    className={`mr-4 px-4 py-2 rounded-lg ${
+                      selectedTab === "volume"
+                        ? "bg-green-600 text-white"
+                        : "text-gray-400"
+                    }`}
+                    onClick={() => setSelectedTab("volume")}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Volume
+                  </motion.button>
+                </div>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    {selectedTab === "price" ? (
+                      <LineChart data={chartData}>
+                        <XAxis dataKey="date" stroke="#4ade80" />
+                        <YAxis stroke="#4ade80" />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "#1f2937",
+                            border: "none",
+                          }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="price"
+                          stroke="#4ade80"
+                          strokeWidth={2}
+                          dot={false}
+                        />
+                      </LineChart>
+                    ) : (
+                      <BarChart data={chartData}>
+                        <XAxis dataKey="date" stroke="#4ade80" />
+                        <YAxis stroke="#4ade80" />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "#1f2937",
+                            border: "none",
+                          }}
+                        />
+                        <Bar dataKey="volume" fill="#4ade80" />
+                      </BarChart>
+                    )}
+                  </ResponsiveContainer>
+                </div>
+              </motion.div>
+            )}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="col-span-3"
+          >
+            <div>
+              <div className="flex mb-9">
+                <button
+                  className={`px-4 py-2 w-1/2 focus:outline-none ${
+                    activeTab === "marketplace"
+                      ? "border-b-2 border-green-600"
+                      : ""
+                  }`}
+                  onClick={() => setActiveTab("marketplace")}
+                >
+                  Marketplace
+                </button>
+                <button
+                  className={`px-4 py-2 w-1/2 focus:outline-none ${
+                    activeTab === "transactions"
+                      ? "border-b-2 border-green-600"
+                      : ""
+                  }`}
+                  onClick={() => setActiveTab("transactions")}
+                >
+                  Transactions
+                </button>
+              </div>
+              <div className="mt-4">
+                {activeTab === "marketplace" && (
+                  <div>
+                    <h2 className="text-2xl font-semibold mb-4 text-green-400">
+                      Marketplace
+                    </h2>
+                    <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-700">
+                          <tr>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                              Date
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                              Seller
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                              Amount
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                              Price (USD)
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                              Action
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-600">
+                          {listings.map((listing) => (
+                            <tr key={listing.id}>
+                              <td className="px-6 py-4 whitespace-nowrap text-center text-gray-400">
+                                {format(
+                                  new Date(listing.createdAt.toDate()),
+                                  "dd-MMM-yyyy"
+                                )}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-center">
+                                {listing.address.slice(0, 6)}...
+                                {listing.address.slice(-5)}
+                                <CopyIcon
+                                  className="inline-block ml-2 cursor-pointer"
+                                  size={16}
+                                  onClick={() => handleCopy(listing.address)}
+                                />
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-center">
+                                {listing.amount}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-center">
+                                ${listing.price}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-center">
+                                {listing.address !== address && (
+                                  <button
+                                    onClick={() => {
+                                      if (address) {
+                                        handleBuyListedTokens(
+                                          listing.id,
+                                          listing.amount,
+                                          listing.price,
+                                          listing.address
+                                        );
+                                      } else {
+                                        alert(
+                                          "Please connect your wallet to buy tokens"
+                                        );
+                                      }
+                                    }}
+                                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
+                                  >
+                                    Buy
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {listings.length === 0 && (
+                        <div className="p-4 text-center text-green-400">
+                          No listings available
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+                {activeTab === "transactions" && (
+                  <div>
+                    <h2 className="text-2xl font-semibold mb-4 text-green-400">
+                      Transactions
+                    </h2>
+                    <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-700">
+                          <tr>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                              Date
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                              Buyer
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                              Seller
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                              Tokens
+                            </th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                              Price
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-600">
+                          {transactions.map((transaction) => (
+                            <tr key={transaction.id}>
+                              <td className="px-6 py-4 whitespace-nowrap text-center text-gray-400">
+                                {format(
+                                  new Date(transaction.createdAt.toDate()),
+                                  "dd-MMM-yyyy"
+                                )}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-center">
+                                {transaction.buyer.slice(0, 6)}...
+                                {transaction.buyer.slice(-5)}
+                                <CopyIcon
+                                  className="inline-block ml-2 cursor-pointer"
+                                  size={16}
+                                  onClick={() => handleCopy(transaction.buyer)}
+                                />
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-center">
+                                {transaction.seller.slice(0, 6)}...
+                                {transaction.seller.slice(-5)}
+                                <CopyIcon
+                                  className="inline-block ml-2 cursor-pointer"
+                                  size={16}
+                                  onClick={() => handleCopy(transaction.seller)}
+                                />
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-center">
+                                {transaction.amount}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-center">
+                                ${transaction.price}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {transactions.length === 0 && (
+                        <div className="p-4 text-center text-green-400">
+                          No transactions available
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+          {copiedMessage && (
+            <div className="fixed bottom-4 right-4 bg-green-700 text-white p-4 rounded-lg shadow-lg">
+              {copiedMessage}
+            </div>
+          )}
+        </div>
       </div>
+      <Footer />
     </div>
   );
 };

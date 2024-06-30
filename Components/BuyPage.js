@@ -45,6 +45,7 @@ import { db } from "../config";
 import { ethers } from "ethers";
 import Navbar from "./Navbar2";
 import { format } from "date-fns";
+import Footer from "./Footer";
 
 const tokenAddress = "0xB0c0f1012567Fb1BEee089e64190a14b844A36b7";
 const exchangeAddress = "0x0E01eF728Af3EbDE5891dDfa1e9Ca03e54C68E64";
@@ -233,263 +234,268 @@ function BuyPage() {
   const accountValue = portfolio.credits * portfolio.price + portfolio.cash;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        <Navbar />
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-green-400">
-            Carbon Credit Buying
-          </h1>
-        </header>
+    <div>
+      <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
+        <div className="max-w-7xl mx-auto">
+          <Navbar />
+          <header className="mb-8">
+            <h1 className="text-3xl font-bold text-green-400">
+              Carbon Credit Buying
+            </h1>
+          </header>
 
-        <motion.div
-          className="bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8 mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <h2 className="text-2xl font-semibold mb-6 text-green-400 flex items-center">
-            <User className="mr-2" /> Account Overview
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
-            <div>
-              <h3 className="text-lg font-medium mb-2 text-gray-300">
-                Balance
-              </h3>
-              <p className="text-2xl font-bold text-green-500">
-                {myBalance} CCT
-                {/* ${accountValue.toFixed(2)} */}
-              </p>
-              <div className="mt-2 text-sm text-gray-400">
-                <p>Value: ${(myBalance * currentPrice).toFixed(2)}</p>
-                <p>Price: ${currentPrice.toFixed(2)} (per CCT)</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col items-end">
-              <h3 className="text-lg font-medium mb-2 text-gray-300">
-                Account Stats
-              </h3>
-              <p className="text-sm text-gray-400">
-                Total Purchases: {totalPurchases}
-              </p>
-              <p className="text-sm text-gray-400">Account Type: Standard</p>
-              <p className="text-sm text-gray-400">
-                Member Since:{" "}
-                {new Intl.DateTimeFormat("en-GB", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                }).format(new Date())}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <motion.button
-              className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <CreditCard className="mb-2" />
-              <span className="text-sm">Deposit</span>
-            </motion.button>
-            <motion.button
-              className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Briefcase className="mb-2" />
-              <span className="text-sm">Withdraw</span>
-            </motion.button>
-            <motion.button
-              className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Settings className="mb-2" />
-              <span className="text-sm">Settings</span>
-            </motion.button>
-            <motion.button
-              className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <HelpCircle className="mb-2" />
-              <span className="text-sm">Support</span>
-            </motion.button>
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           <motion.div
-            className="lg:col-span-2"
+            className="bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8 mb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.2 }}
           >
-            <Card className="bg-gray-800 shadow-lg h-full">
-              <CardHeader>
-                <h2 className="text-xl font-semibold text-green-400">
-                  Buy Carbon Credits
-                </h2>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <label
-                      htmlFor="tokenAmount"
-                      className="block text-sm font-medium text-gray-400 mb-1"
-                    >
-                      Token Amount:
-                    </label>
-                    <input
-                      type="number"
-                      id="tokenAmount"
-                      value={tokenAmount}
-                      onChange={(e) => setTokenAmount(e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="Enter token amount"
-                    />
-                  </div>
+            <h2 className="text-2xl font-semibold mb-6 text-green-400 flex items-center">
+              <User className="mr-2" /> Account Overview
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
+              <div>
+                <h3 className="text-lg font-medium mb-2 text-gray-300">
+                  Balance
+                </h3>
+                <p className="text-2xl font-bold text-green-500">
+                  {myBalance} CCT
+                  {/* ${accountValue.toFixed(2)} */}
+                </p>
+                <div className="mt-2 text-sm text-gray-400">
+                  <p>Value: ${(myBalance * currentPrice).toFixed(2)}</p>
+                  <p>Price: ${currentPrice.toFixed(2)} (per CCT)</p>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+
+              <div className="flex flex-col items-end">
+                <h3 className="text-lg font-medium mb-2 text-gray-300">
+                  Account Stats
+                </h3>
+                <p className="text-sm text-gray-400">
+                  Total Purchases: {totalPurchases}
+                </p>
+                <p className="text-sm text-gray-400">Account Type: Standard</p>
+                <p className="text-sm text-gray-400">
+                  Member Since:{" "}
+                  {new Intl.DateTimeFormat("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  }).format(new Date())}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <motion.button
+                className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <CreditCard className="mb-2" />
+                <span className="text-sm">Deposit</span>
+              </motion.button>
+              <motion.button
+                className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Briefcase className="mb-2" />
+                <span className="text-sm">Withdraw</span>
+              </motion.button>
+              <motion.button
+                className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Settings className="mb-2" />
+                <span className="text-sm">Settings</span>
+              </motion.button>
+              <motion.button
+                className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <HelpCircle className="mb-2" />
+                <span className="text-sm">Support</span>
+              </motion.button>
+            </div>
           </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <motion.div
+              className="lg:col-span-2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Card className="bg-gray-800 shadow-lg h-full">
+                <CardHeader>
+                  <h2 className="text-xl font-semibold text-green-400">
+                    Buy Carbon Credits
+                  </h2>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <label
+                        htmlFor="tokenAmount"
+                        className="block text-sm font-medium text-gray-400 mb-1"
+                      >
+                        Token Amount:
+                      </label>
+                      <input
+                        type="number"
+                        id="tokenAmount"
+                        value={tokenAmount}
+                        onChange={(e) => setTokenAmount(e.target.value)}
+                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Enter token amount"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <Card className="bg-gray-800 shadow-lg h-full">
+                <CardHeader>
+                  <h2 className="text-xl font-semibold text-green-400">
+                    Transaction Overview
+                  </h2>
+                </CardHeader>
+                <CardContent>
+                  {tokenAmount ? (
+                    <>
+                      <p className="flex items-center mb-2">
+                        <DollarSign className="mr-2" /> Amount: {tokenAmount}{" "}
+                        tokens
+                      </p>
+                      <p className="flex items-center mb-2">
+                        <TrendingUp className="mr-2" /> Price: $
+                        {currentPrice.toFixed(2)}
+                      </p>
+                      <p className="flex items-center font-bold">
+                        <DollarSign className="mr-2" /> Total: $
+                        {(parseFloat(tokenAmount) * currentPrice).toFixed(2)}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-gray-400">
+                      Enter token amount to see transaction details.
+                    </p>
+                  )}
+                </CardContent>
+                {tokenAmount && (
+                  <CardFooter>
+                    <button
+                      onClick={() => {
+                        if (address) {
+                          handleBuyTokens();
+                        } else {
+                          alert("Please connect your wallet");
+                        }
+                      }}
+                      className="w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-md transition-colors"
+                    >
+                      Confirm Purchase
+                    </button>
+                  </CardFooter>
+                )}
+              </Card>
+            </motion.div>
+          </div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.7 }}
           >
-            <Card className="bg-gray-800 shadow-lg h-full">
-              <CardHeader>
-                <h2 className="text-xl font-semibold text-green-400">
-                  Transaction Overview
-                </h2>
-              </CardHeader>
-              <CardContent>
-                {tokenAmount ? (
-                  <>
-                    <p className="flex items-center mb-2">
-                      <DollarSign className="mr-2" /> Amount: {tokenAmount}{" "}
-                      tokens
-                    </p>
-                    <p className="flex items-center mb-2">
-                      <TrendingUp className="mr-2" /> Price: $
-                      {currentPrice.toFixed(2)}
-                    </p>
-                    <p className="flex items-center font-bold">
-                      <DollarSign className="mr-2" /> Total: $
-                      {(parseFloat(tokenAmount) * currentPrice).toFixed(2)}
-                    </p>
-                  </>
-                ) : (
-                  <p className="text-gray-400">
-                    Enter token amount to see transaction details.
-                  </p>
-                )}
-              </CardContent>
-              {tokenAmount && (
-                <CardFooter>
-                  <button
-                    onClick={() => {
-                      if (address) {
-                        handleBuyTokens();
-                      } else {
-                        alert("Please connect your wallet");
-                      }
-                    }}
-                    className="w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-md transition-colors"
-                  >
-                    Confirm Purchase
-                  </button>
-                </CardFooter>
-              )}
-            </Card>
-          </motion.div>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-        >
-          <h2 className="text-2xl font-semibold mb-4 text-green-400">
-            Purchase History
-          </h2>
-          <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-gray-700">
-                <tr>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Amount
-                  </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Price (USD)
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-600">
-                {purchases.map((purchase) => (
-                  <tr key={purchase.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-center text-gray-400">
-                      {purchase.createdAt &&
-                        purchase.createdAt.toDate() &&
-                        format(
-                          new Date(purchase.createdAt.toDate()),
-                          "dd-MMM-yyyy"
-                        )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {purchase.amount}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      ${purchase.price}
-                    </td>
+            <h2 className="text-2xl font-semibold mb-4 text-green-400">
+              Purchase History
+            </h2>
+            <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+              <table className="w-full">
+                <thead className="bg-gray-700">
+                  <tr>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      Amount
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      Price (USD)
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            {totalPurchases === 0 && (
-              <div className="p-4 text-center text-green-400">
-                You have no purchases
-              </div>
-            )}
-          </div>
-        </motion.div>
+                </thead>
+                <tbody className="divide-y divide-gray-600">
+                  {purchases.map((purchase) => (
+                    <tr key={purchase.id}>
+                      <td className="px-6 py-4 whitespace-nowrap text-center text-gray-400">
+                        {purchase.createdAt &&
+                          purchase.createdAt.toDate() &&
+                          format(
+                            new Date(purchase.createdAt.toDate()),
+                            "dd-MMM-yyyy"
+                          )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-center">
+                        {purchase.amount}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-center">
+                        ${purchase.price}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {totalPurchases === 0 && (
+                <div className="p-4 text-center text-green-400">
+                  You have no purchases
+                </div>
+              )}
+            </div>
+          </motion.div>
 
-        {showSuccessAlert && (
-          <Alert className="mt-4 bg-green-500 text-white">
-            <AlertDescription>Purchase made successfully!</AlertDescription>
-          </Alert>
-        )}
+          {showSuccessAlert && (
+            <Alert className="mt-4 bg-green-500 text-white">
+              <AlertDescription>Purchase made successfully!</AlertDescription>
+            </Alert>
+          )}
 
-        {showModal && (
-          <Modal onClose={() => setShowModal(false)}>
-            <ModalHeader>Confirm Removal</ModalHeader>
-            <ModalBody>Are you sure you want to remove this listing?</ModalBody>
-            <ModalFooter>
-              <button
-                onClick={() => setShowModal(false)}
-                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmRemoveListing}
-                className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-              >
-                Confirm
-              </button>
-            </ModalFooter>
-          </Modal>
-        )}
+          {showModal && (
+            <Modal onClose={() => setShowModal(false)}>
+              <ModalHeader>Confirm Removal</ModalHeader>
+              <ModalBody>
+                Are you sure you want to remove this listing?
+              </ModalBody>
+              <ModalFooter>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmRemoveListing}
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                >
+                  Confirm
+                </button>
+              </ModalFooter>
+            </Modal>
+          )}
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }
