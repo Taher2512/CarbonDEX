@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
-  apiKey: "AIzaSyDt5t3PkGJ3w6vxIdGuYrEQG76jN74vbjI",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API,
   authDomain: "carbondex-daf16.firebaseapp.com",
   projectId: "carbondex-daf16",
   storageBucket: "carbondex-daf16.appspot.com",
