@@ -239,7 +239,7 @@ const LandingPage = () => {
             </div>
             <p className="mt-12 text-xl text-gray-300">
               Join us in capturing this rapidly growing market, expanding at an
-              unprecedented rate of X% annually.
+              unprecedented rate of 24.4% annually.
             </p>
           </div>
         </section>
