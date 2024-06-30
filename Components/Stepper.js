@@ -1,5 +1,4 @@
 "use client";
-
 import { useAddress, useSigner } from "@thirdweb-dev/react";
 import React, { useState, useEffect } from "react";
 import { Alert } from "./Alert";
@@ -25,12 +24,6 @@ const Stepper = ({ address, serialNo }) => {
     if (tokenization) {
       console.log("address", address1);
       console.log("Tokenizing...");
-      // try {
-      //   const tokenizing = await tokenization.call("mintCredits", [address,serialNo]);
-
-      // } catch (error) {
-      //   console.error("Error fetching balance:", error);
-      // }
       try {
         seterrorMsg("");
         settokensMinted(0);
@@ -56,42 +49,12 @@ const Stepper = ({ address, serialNo }) => {
         }
       } catch (error) {
         settokensMinted(0);
-        seterrorMsg("Error in tokenization");
+        // seterrorMsg("Error in tokenization")
         console.log(error);
       }
     }
   };
   useEffect(() => {
-    // if(!address ||!serialNo){
-    //   console.log("Address serial",address,serial)
-    // router.push('/tokenize')
-    // }
-    // else{
-    //   Tokenize()
-    //   console.log("Tokenizing...")
-    //   console.log("newevents",newEvents)
-    //   if(newEvents){
-    //     console.log(newEvents)
-    //     setCurrentStep(2)
-    //     if(newEvents2){
-    //       setCurrentStep(3)
-    //     }
-    //     else if(error2){
-    //       alert("Error in tokenization")
-    //     }
-    //   }
-    //   else if(error){
-    //     alert("Error in tokenization")
-    //   }
-
-    // }
-    // const timer = setTimeout(() => {
-    //   if (currentStep < totalSteps) {
-    //     setCurrentStep(prevStep => prevStep + 1);
-    //   }
-    // }, 2000); // Change step every 2 seconds
-
-    // return () => clearTimeout(timer);
     if (address1) {
       Tokenize();
     }
@@ -142,12 +105,12 @@ const Stepper = ({ address, serialNo }) => {
           </div>
         ))}
       </div>
-      {tokensMinted && (
+      {tokensMinted && !errorMsg && (
         <Alert className="text-white">
-          Tokens minted successfully {tokensMinted}
+          {tokensMinted} Tokens minted successfully{" "}
         </Alert>
       )}
-      {errorMsg && (
+      {errorMsg && !tokensMinted && (
         <Alert className="text-white border-red-600">{errorMsg}</Alert>
       )}
     </div>
