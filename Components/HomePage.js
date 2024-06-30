@@ -15,9 +15,12 @@ import {
   TrendingUp,
   Leaf,
   DollarSign,
+  Bitcoin,
+  Waypoints,
 } from "lucide-react";
 import WavyDotPattern from "./WavyDotPattern";
 import Footer from "./Footer";
+import Image from "next/image";
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -137,11 +140,13 @@ const LandingPage = () => {
                 },
                 {
                   icon: (
-                    <TrendingUp className="w-16 h-16 text-green-400 mb-6" />
+                    // <TrendingUp className="w-16 h-16 text-green-400 mb-6" />
+                    <Bitcoin className="w-16 h-16 text-green-400 mb-6" />
+                    // <Image src={'/eth.svg'} width={16} height={16}/>
                   ),
-                  title: "Lightning-Fast Trading",
+                  title: "Trading On Base",
                   description:
-                    "On-chain logic accelerates transactions, outpacing traditional systems.",
+                    "Leveraging Base's Ethereum compatibility, low costs, and high throughput for efficient, scalable carbon credit trading.",
                 },
                 {
                   icon: <Globe className="w-16 h-16 text-green-400 mb-6" />,
@@ -190,6 +195,8 @@ const LandingPage = () => {
             <h3 className="text-4xl font-bold text-center mb-16 text-white">
               How It Works
             </h3>
+            <span className=" flex gap-32">
+
             <div className="max-w-3xl mx-auto">
               {[
                 "Register and verify your account",
@@ -208,6 +215,9 @@ const LandingPage = () => {
                 </div>
               ))}
             </div>
+            <Waypoints className="w-96 h-96 text-green-500" />
+            </span>
+
           </div>
         </section>
 
