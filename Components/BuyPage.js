@@ -325,9 +325,12 @@ function BuyPage() {
               transition={{ delay: 0.3 }}
             >
               <Card className="bg-gray-800 shadow-lg h-full">
-                <CardHeader>
-                  <h2 className="text-xl font-semibold text-green-400">
+                <CardHeader className="flex flex-row items-center">
+                  <h2 className="text-xl font-semibold text-green-400 mr-3">
                     Buy Carbon Credits
+                  </h2>
+                  <h2 className="text-sm text-gray-400">
+                    (Price: ${currentPrice.toFixed(2)})
                   </h2>
                 </CardHeader>
                 <CardContent>
