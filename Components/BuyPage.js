@@ -262,7 +262,7 @@ function BuyPage() {
                 </div>
               </div>
 
-              <div className="flex flex-col items-end">
+              <div className="flex flex-col items-start sm:items-end">
                 <h3 className="text-lg font-medium mb-2 text-gray-300">
                   Account Stats
                 </h3>

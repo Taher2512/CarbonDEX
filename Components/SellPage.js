@@ -275,7 +275,6 @@ function SellPage() {
                 </h3>
                 <p className="text-2xl font-bold text-green-500">
                   {myBalance} CCT
-                  {/* ${accountValue.toFixed(2)} */}
                 </p>
                 <div className="mt-2 text-sm text-gray-400">
                   <p>Value: ${(myBalance * currentPrice).toFixed(2)}</p>
@@ -283,7 +282,7 @@ function SellPage() {
                 </div>
               </div>
 
-              <div className="flex flex-col items-end">
+              <div className="flex flex-col items-start sm:items-end">
                 <h3 className="text-lg font-medium mb-2 text-gray-300">
                   Account Stats
                 </h3>
