@@ -194,8 +194,8 @@ const LandingPage = () => {
             <h3 className="text-4xl font-bold text-center mb-16 text-white">
               How It Works
             </h3>
-            <span className=" flex gap-32">
-              <div className="max-w-3xl mx-auto">
+            <div className="flex flex-col sm:flex-row sm:gap-32">
+              <div className="max-w-3xl mx-auto w-full">
                 {[
                   "Register and verify your account",
                   "List your carbon credits or browse available offerings",
@@ -204,7 +204,7 @@ const LandingPage = () => {
                   "Track your impact and receive detailed reports",
                 ].map((step, index) => (
                   <div key={index} className="flex items-center mb-12 group">
-                    <div className="bg-green-500 text-gray-900 rounded-full w-12 h-12 flex items-center justify-center mr-6 text-xl font-bold transition-all duration-300 group-hover:scale-110">
+                    <div className="bg-green-500 text-gray-900 rounded-full w-12 h-12 flex items-center justify-center mr-6 text-xl font-bold transition-all duration-300 group-hover:scale-110 flex-shrink-0">
                       {index + 1}
                     </div>
                     <p className="text-xl text-gray-300 group-hover:text-green-400 transition-colors duration-300">
@@ -213,8 +213,10 @@ const LandingPage = () => {
                   </div>
                 ))}
               </div>
-              <Layers className="w-96 h-96 text-green-500 mr-20" />
-            </span>
+              <div className="hidden sm:block sm:w-96 sm:h-96">
+                <Layers className="w-full h-full text-green-500 mr-20" />
+              </div>
+            </div>
           </div>
         </section>
 

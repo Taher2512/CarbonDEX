@@ -547,7 +547,7 @@ function SellPage() {
                   </h2>
                 </CardHeader>
                 <CardContent className="h-3/4 flex items-center justify-center">
-                  <div className="text-4xl font-bold text-center">
+                  <div className="text-4xl font-bold text-center pb-5 sm:pb-0">
                     ${currentPrice ? currentPrice.toFixed(2) : "-"}
                   </div>
                 </CardContent>
